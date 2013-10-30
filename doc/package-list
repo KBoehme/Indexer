@@ -1,0 +1,6 @@
+client
+client.communicator
+server.database
+server.databaseaccess
+shared.model
+standalone
