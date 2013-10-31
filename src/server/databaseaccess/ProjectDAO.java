@@ -8,9 +8,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import server.database.Database;
 import shared.model.Project;
+import shared.model.User;
 
 /**
  * @author Kevin
@@ -25,6 +27,46 @@ public class ProjectDAO {
 	public ProjectDAO(Database database) {
 		// TODO Auto-generated constructor stub
 		this.database = database;
+	}
+
+	/**
+	 * This function will return all of the current projects.
+	 * 
+	 * @return ArrayList<project> allprojects
+	 * @throws SQLException
+	 */
+	public ArrayList<Project> getAll() throws SQLException {
+		ArrayList<Project> allprojects = new ArrayList<Project>();
+		Connection con = database.getConnection();
+		PreparedStatement pstmt = null;
+		Statement stmt = null;
+		ResultSet results = null;
+
+		try {
+			String sql = "SELECT * FROM projects";
+			stmt = database.getConnection().prepareStatement(sql);
+			results = stmt.executeQuery(sql);
+			while (results.next()) {
+				// Extract all the information from the project we pulled.
+				int id = results.getInt(1);
+				String title = results.getString(2);
+				int recordsperimage = results.getInt(3);
+				int firstycoord = results.getInt(4);
+				int recordheight = results.getInt(5);
+				
+				Project project = new Project(id,title, recordsperimage, firstycoord, recordheight);
+				allprojects.add(project);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (results != null)
+				results.close();
+			if (stmt != null)
+				stmt.close();
+		}
+		return allprojects;
 	}
 
 

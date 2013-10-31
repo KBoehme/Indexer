@@ -1,11 +1,7 @@
-/**
- * 
- */
 package utilities;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.sql.SQLException;
 
 import javax.xml.parsers.DocumentBuilder;

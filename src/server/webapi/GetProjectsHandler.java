@@ -4,6 +4,12 @@
 package server.webapi;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import server.database.Database;
+import shared.model.Project;
+import client.communicator.GetProjects_result;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -18,7 +24,6 @@ public class GetProjectsHandler implements HttpHandler  {
 	 * 
 	 */
 	public GetProjectsHandler() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
@@ -26,8 +31,20 @@ public class GetProjectsHandler implements HttpHandler  {
 	 */
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
-		// TODO Auto-generated method stub
-		
+		GetProjects_result gp_result = new GetProjects_result();
+		ArrayList<Project> allprojects = null;
+		Database database = new Database();
+			
+		try {
+			database.startTransaction();
+			allprojects = database.getProjectdao().getAll();
+			database.endTransaction(true);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		gp_result.setProjects(allprojects);
 	}
 
 }

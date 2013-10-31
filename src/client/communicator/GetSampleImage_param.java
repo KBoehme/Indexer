@@ -12,6 +12,7 @@ public class GetSampleImage_param {
 	private String username;
 	private String password;
 	private int projectid;
+	private String urlprefix;
 	/**
 	 * 
 	 */
@@ -64,7 +65,16 @@ public class GetSampleImage_param {
 	public void setProjectid(int projectid) {
 		this.projectid = projectid;
 	}
-	
-	
-
+	/**
+	 * @return the urlprefix
+	 */
+	public String getUrlprefix() {
+		return urlprefix;
+	}
+	/**
+	 * @param urlprefix the urlprefix to set
+	 */
+	public void setUrlprefix(String urlprefix) {
+		this.urlprefix = urlprefix;
+	}
 }

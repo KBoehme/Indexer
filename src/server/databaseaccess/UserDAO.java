@@ -18,12 +18,13 @@ import shared.model.User;
  * This object performs specific operations on the server relating to Users. Such as add user,
  * delete user, etc.
  * </p>
+ * 
  * @author Kevin
  * 
  */
 public class UserDAO {
 
-	//private static Logger logger;
+	// private static Logger logger;
 
 	Database database;
 
@@ -35,9 +36,9 @@ public class UserDAO {
 		this.database = database;
 	}
 
-
 	/**
 	 * This function will return all of the current Users.
+	 * 
 	 * @return ArrayList<User> allusers
 	 * @throws SQLException
 	 */
@@ -77,26 +78,25 @@ public class UserDAO {
 		}
 		return allUsers;
 	}
-	
-	public User getUser(Database database) throws SQLException {
-		User user = null;
+
+	public User getUser(String get_username, String get_password) throws SQLException {
+
 		Connection con = database.getConnection();
-		
 		PreparedStatement pstmt = null;
-		
 		ResultSet results = null;
+		User user = null;
 
 		try {
-			String sql = "SELECT * FROM Users WHERE username = ?";
-			
-			pstmt.setString(1, user.getUsername());
-			
+			String sql = "SELECT * FROM Users WHERE username = ? , password = ? ";
+
+			pstmt.setString(1, get_username);
+			pstmt.setString(2, get_password);
+
 			pstmt = database.getConnection().prepareStatement(sql);
-			
+
 			results = pstmt.executeQuery();
-			
-			while(results.next()) {
-				user = new User();
+
+			while (results.next()) {
 				// Extract all the information from the User we pulled.
 				int id = results.getInt(1);
 				String username = results.getString(2);
@@ -107,9 +107,8 @@ public class UserDAO {
 				int num_indexed_records = results.getInt(7);
 				int current_batch_id = results.getInt(8);
 
-				user = new User(username, password, firstname, lastname, email, num_indexed_records,
-						current_batch_id);
-			}			
+				user = new User(username, password, firstname, lastname, email, num_indexed_records, current_batch_id);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -119,12 +118,13 @@ public class UserDAO {
 			if (pstmt != null)
 				pstmt.close();
 		}
-		return user;
 
+		return user;
 	}
-	
+
 	/**
 	 * Insert user into the database.
+	 * 
 	 * @throws SQLException
 	 */
 	public void insert(User user) throws SQLException {
@@ -147,7 +147,7 @@ public class UserDAO {
 			pstmt.setLong(7, user.getCurr_batch_id());
 
 			if (pstmt.executeUpdate() == 1) {
-				//System.out.println("Success: User inserted into database.");
+				// System.out.println("Success: User inserted into database.");
 				stmt = con.createStatement();
 				// results = stmt.executeQuery("SELECT last_insert.rowid()");
 				// results.next();
@@ -171,16 +171,17 @@ public class UserDAO {
 
 	/**
 	 * Update user in the database.
+	 * 
 	 * @param user
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public void update(User user) throws SQLException {
-		
+
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		Statement stmt = null;
 		ResultSet results = null;
-		
+
 		try {
 			String addsql = "UPDATE Users SET (username, password, firstname, lastname, email, num_indexed_records, current_batch_id) VALUES (?,?,?,?,?,?,?)";
 			pstmt = con.prepareStatement(addsql);
@@ -192,26 +193,30 @@ public class UserDAO {
 			pstmt.setString(5, user.getEmail());
 			pstmt.setLong(6, user.getNum_indexed_records());
 			pstmt.setLong(7, user.getCurr_batch_id());
-			
-			if(pstmt.executeUpdate() == 1) {
+
+			if (pstmt.executeUpdate() == 1) {
 				System.out.println("Success: User updated.");
 			} else {
-				//ERROR :Q
+				// ERROR :Q
 				System.out.println("Failed: Unable to update user.");
 			}
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (pstmt != null) stmt.close();
-			if (results != null) results.close();
-			if (stmt != null) stmt.close();
+			if (pstmt != null)
+				stmt.close();
+			if (results != null)
+				results.close();
+			if (stmt != null)
+				stmt.close();
 		}
 	}
-	
+
 	/**
 	 * Query the database.
+	 * 
 	 * @param user
 	 */
 	public void query(User user) {
@@ -219,7 +224,7 @@ public class UserDAO {
 		Connection con = database.getConnection();
 		Statement stmt = null;
 		ResultSet results = null;
-		
+
 		try {
 			String sql = "SELECT FROM users WHERE users.ID =" + user.getID();
 			stmt = con.prepareStatement(sql);
@@ -233,15 +238,16 @@ public class UserDAO {
 
 	/**
 	 * Delete user from the database.
-	 * @throws SQLException 
+	 * 
+	 * @throws SQLException
 	 * 
 	 */
 	public void delete(User user) throws SQLException {
-		
+
 		Connection con = database.getConnection();
 		Statement stmt = null;
 		ResultSet results = null;
-		
+
 		try {
 			String sql = "DELETE FROM User WHERE id = " + user.getID();
 			stmt = con.prepareStatement(sql);

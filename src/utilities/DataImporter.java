@@ -9,8 +9,8 @@ import java.util.Scanner;
 import server.database.Database;
 
 /**
- * This class reads in the Records file and copies all data over to secure
- * location. It also calls the parseXML class.
+ * This class reads in the Records file and copies all data over to secure location. It also calls
+ * the parseXML class.
  * 
  * @author Kevin
  * 
@@ -18,6 +18,7 @@ import server.database.Database;
 public class DataImporter {
 
 	Database database;
+
 	/**
 	 * Default Constructor
 	 * 
@@ -28,7 +29,8 @@ public class DataImporter {
 	}
 
 	/**
-	 * @param full path to XML file
+	 * @param full
+	 *            path to XML file
 	 */
 	public static void main(String[] args) {
 		System.out.println("main");
@@ -36,8 +38,7 @@ public class DataImporter {
 			// This standalone program takes in one argument which is the
 			// relative or absolute path to the XML file.
 			String pathtoxml = args[0];
-			
-			
+
 			// First delete all tables from SQLite database and directory
 			// structure
 
@@ -50,16 +51,16 @@ public class DataImporter {
 			// Third copy all files (knownsdata, helphtml, and images) to the
 			// servers directory
 		} catch (Exception e) {
-			System.out.println(e.toString());
+			System.out.println("USAGE: java DataImporter [path_to_xml_file]");
 			// throw e;
 		}
 	}
 
 	private void createAllTables() throws SQLException {
 		// TODO : figure out how to use this stuff??
-		
+
 		System.out.println("create all tables");
-		
+
 		Statement stmt = null;
 		Scanner s = null;
 		try {
@@ -70,9 +71,9 @@ public class DataImporter {
 		}
 		s.useDelimiter(";");
 		String SQLcreatetable = "";
-		while(s.hasNext()) {
+		while (s.hasNext()) {
 			SQLcreatetable = s.next();
-			//System.out.println("out " + SQLcreatetable);
+			// System.out.println("out " + SQLcreatetable);
 			stmt = null;
 			try {
 				stmt = database.getConnection().createStatement();

@@ -69,6 +69,20 @@ public class GetSampleImage_result {
 		this.success = success;
 	}
 
+	/**
+	 * @return the image
+	 */
+	public Image getImage() {
+		return image;
+	}
+
+	/**
+	 * @param image the image to set
+	 */
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
 	public String getResultstring() {
 		StringBuilder srb = new StringBuilder();
 		if(this.success == 1) { //success
@@ -81,5 +95,5 @@ public class GetSampleImage_result {
 		result_string = srb.toString();
 		return result_string;
 	}
-	
+
 }

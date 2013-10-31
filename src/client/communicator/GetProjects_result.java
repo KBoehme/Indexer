@@ -41,6 +41,48 @@ public class GetProjects_result {
 
 
 	/**
+	 * @return the success
+	 */
+	public int getSuccess() {
+		return success;
+	}
+
+	/**
+	 * @param success the success to set
+	 */
+	public void setSuccess(int success) {
+		this.success = success;
+	}
+
+	/**
+	 * @return the projects
+	 */
+	public ArrayList<Project> getProjects() {
+		return projects;
+	}
+
+	/**
+	 * @param projects the projects to set
+	 */
+	public void setProjects(ArrayList<Project> projects) {
+		this.projects = projects;
+	}
+
+	/**
+	 * @return the result_string
+	 */
+	public String getResult_string() {
+		return result_string;
+	}
+
+	/**
+	 * @param result_string the result_string to set
+	 */
+	public void setResult_string(String result_string) {
+		this.result_string = result_string;
+	}
+
+	/**
 	 * 
 	 */
 	public GetProjects_result() {

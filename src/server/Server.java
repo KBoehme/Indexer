@@ -7,14 +7,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import server.database.Database;
-import server.webapi.DownloadFileHandler;
-import server.webapi.GetFieldsHandler;
-import server.webapi.GetProjectsHandler;
-import server.webapi.GetSampleImageHandler;
-import server.webapi.GetSampleProjectsHandler;
-import server.webapi.SearchHandler;
-import server.webapi.SubmitBatchHandler;
-import server.webapi.ValidateUserHandler;
+import server.webapi.*;
 
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -54,7 +47,7 @@ public class Server {
 		HttpHandler validateUserHandler = new ValidateUserHandler();
 		HttpHandler getProjectsHandler = new GetProjectsHandler();
 		HttpHandler getSampleImageHandler = new GetSampleImageHandler();
-		HttpHandler getSampleProjectsHandler = new GetSampleProjectsHandler();
+		HttpHandler downloadBatchHandler = new DownloadBatchHandler();
 		HttpHandler submitBatchHandler = new SubmitBatchHandler();
 		HttpHandler getFieldsHandler = new GetFieldsHandler();
 		HttpHandler searchhandler = new SearchHandler();
@@ -63,12 +56,13 @@ public class Server {
 		server.createContext("/ValidateUser", validateUserHandler);
 		server.createContext("/GetProjects", getProjectsHandler);
 		server.createContext("/GetSampleImage", getSampleImageHandler);
-		server.createContext("/GetSampleProject", getSampleProjectsHandler);
-		server.createContext("/DownloadBatch", submitBatchHandler);
+		server.createContext("/DownloadBatch", downloadBatchHandler);
+		server.createContext("/SubmitBatch", submitBatchHandler);
 		server.createContext("/GetFields", getFieldsHandler);
 		server.createContext("/Search", searchhandler);
 		server.createContext("/download", downloadFileHandler);
 
+		System.out.println("Server is started.");
 		server.start();
 	}
 }

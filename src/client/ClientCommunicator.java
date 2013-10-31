@@ -10,6 +10,7 @@ import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
 
+import server.Server;
 import client.communicator.DownloadBatch_param;
 import client.communicator.DownloadBatch_result;
 import client.communicator.GetFields_param;
@@ -48,7 +49,17 @@ public class ClientCommunicator {
 		this.SERVER_HOST = "localhost";
 		this.SERVER_PORT = 8080;
 		this.URL_PREFIX = "http://" + SERVER_HOST + ":" + SERVER_PORT;
-		xmlstream = new XStream(new DomDriver());
+		xmlstream = new XStream(new DomDriver());	
+		
+		Server server = new Server(SERVER_PORT);
+		try {
+			server.run();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("server failed to run");
+
+		}
 	}
 	
 	public ClientCommunicator(String host, int port) {
@@ -56,6 +67,15 @@ public class ClientCommunicator {
 		SERVER_PORT = port;
 		this.URL_PREFIX = "http://" + SERVER_HOST + ":" + SERVER_PORT;
 		xmlstream = new XStream(new DomDriver());
+		
+		Server server = new Server(SERVER_PORT);
+		try {
+			server.run();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("server failed to run");
+		}
 	}
 	
 	//Make a constructor that takes in custom server information.
