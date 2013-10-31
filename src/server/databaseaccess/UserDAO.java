@@ -35,6 +35,94 @@ public class UserDAO {
 		this.database = database;
 	}
 
+
+	/**
+	 * This function will return all of the current Users.
+	 * @return ArrayList<User> allusers
+	 * @throws SQLException
+	 */
+	public ArrayList<User> getAll() throws SQLException {
+		ArrayList<User> allUsers = new ArrayList<User>();
+		Connection con = database.getConnection();
+		PreparedStatement pstmt = null;
+		Statement stmt = null;
+		ResultSet results = null;
+
+		try {
+			String sql = "SELECT * FROM Users";
+			stmt = database.getConnection().prepareStatement(sql);
+			results = stmt.executeQuery(sql);
+			while (results.next()) {
+				// Extract all the information from the User we pulled.
+				int id = results.getInt(1);
+				String username = results.getString(2);
+				String password = results.getString(3);
+				String firstname = results.getString(4);
+				String lastname = results.getString(5);
+				String email = results.getString(6);
+				int num_indexed_records = results.getInt(7);
+				int current_batch_id = results.getInt(8);
+				User user = new User(username, password, firstname, lastname, email, num_indexed_records,
+						current_batch_id);
+				allUsers.add(user);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (results != null)
+				results.close();
+			if (stmt != null)
+				stmt.close();
+		}
+		return allUsers;
+	}
+	
+	public User getUser(Database database) throws SQLException {
+		User user = null;
+		Connection con = database.getConnection();
+		
+		PreparedStatement pstmt = null;
+		
+		ResultSet results = null;
+
+		try {
+			String sql = "SELECT * FROM Users WHERE username = ?";
+			
+			pstmt.setString(1, user.getUsername());
+			
+			pstmt = database.getConnection().prepareStatement(sql);
+			
+			results = pstmt.executeQuery();
+			
+			while(results.next()) {
+				user = new User();
+				// Extract all the information from the User we pulled.
+				int id = results.getInt(1);
+				String username = results.getString(2);
+				String password = results.getString(3);
+				String firstname = results.getString(4);
+				String lastname = results.getString(5);
+				String email = results.getString(6);
+				int num_indexed_records = results.getInt(7);
+				int current_batch_id = results.getInt(8);
+
+				user = new User(username, password, firstname, lastname, email, num_indexed_records,
+						current_batch_id);
+			}			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (results != null)
+				results.close();
+			if (pstmt != null)
+				pstmt.close();
+		}
+		return user;
+
+	}
+	
 	/**
 	 * Insert user into the database.
 	 * @throws SQLException
@@ -172,47 +260,4 @@ public class UserDAO {
 		}
 
 	}
-
-	/**
-	 * This function will return all of the current Users.
-	 * @return
-	 * @throws SQLException
-	 */
-	public ArrayList<User> getAll() throws SQLException {
-		ArrayList<User> allUsers = new ArrayList<User>();
-		Connection con = database.getConnection();
-		PreparedStatement pstmt = null;
-		Statement stmt = null;
-		ResultSet results = null;
-
-		try {
-			String sql = "SELECT * FROM Users";
-			stmt = database.getConnection().prepareStatement(sql);
-			results = stmt.executeQuery(sql);
-			while (results.next()) {
-				// Extract all the information from the User we pulled.
-				int id = results.getInt(1);
-				String username = results.getString(2);
-				String password = results.getString(3);
-				String firstname = results.getString(4);
-				String lastname = results.getString(5);
-				String email = results.getString(6);
-				int num_indexed_records = results.getInt(7);
-				int current_batch_id = results.getInt(8);
-				User user = new User(username, password, firstname, lastname, email, num_indexed_records,
-						current_batch_id);
-				allUsers.add(user);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			if (results != null)
-				results.close();
-			if (stmt != null)
-				stmt.close();
-		}
-		return allUsers;
-	}
-	
 }

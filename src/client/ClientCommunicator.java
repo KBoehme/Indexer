@@ -66,7 +66,7 @@ public class ClientCommunicator {
 	 * <p>
 	 * INPUTS
 	 * 
-	 * USER ::= String User’s name PASSWORD ::= String User’s password
+	 * USER ::= String Userï¿½s name PASSWORD ::= String Userï¿½s password
 	 * 
 	 * OUTPUTS If the user credentials are valid,
 	 * 
@@ -78,7 +78,7 @@ public class ClientCommunicator {
 	 * 
 	 * FORMAT EXAMPLE OUTPUT ::= FALSE\n
 	 * 
-	 * If the operation fails for any reason (e.g., can’t connect to the server, internal server
+	 * If the operation fails for any reason (e.g., canï¿½t connect to the server, internal server
 	 * error, etc.),
 	 * 
 	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n
@@ -96,7 +96,7 @@ public class ClientCommunicator {
 	 * 
 	 * Returns information about all of the available projects
 	 * 
-	 * INPUTS USER ::= String User’s name PASSWORD ::= String User’s password
+	 * INPUTS USER ::= String Userï¿½s name PASSWORD ::= String Userï¿½s password
 	 * 
 	 * OUTPUTS If the operation succeeds,
 	 * 
@@ -106,7 +106,7 @@ public class ClientCommunicator {
 	 * String
 	 * 
 	 * 
-	 * If the operation fails for any reason (e.g., invalid user name or password, can’t connect to
+	 * If the operation fails for any reason (e.g., invalid user name or password, canï¿½t connect to
 	 * the server, internal server error, etc.),
 	 * 
 	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n FAILED\n
@@ -125,7 +125,7 @@ public class ClientCommunicator {
 	 * 
 	 * Returns a sample image for the specified project
 	 * 
-	 * INPUTS USER ::= String User’s name PASSWORD ::= String User’s password PROJECT ::= Integer
+	 * INPUTS USER ::= String Userï¿½s name PASSWORD ::= String Userï¿½s password PROJECT ::= Integer
 	 * Project ID
 	 * 
 	 * OUTPUTS If the operation succeeds,
@@ -134,7 +134,7 @@ public class ClientCommunicator {
 	 * ::= URL
 	 * 
 	 * If the operation fails for any reason (e.g., invalid project ID, invalid user name or
-	 * password, can’t connect to the server, internal server error, etc.),
+	 * password, canï¿½t connect to the server, internal server error, etc.),
 	 * 
 	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n FAILED\n
 	 * 
@@ -159,7 +159,7 @@ public class ClientCommunicator {
 	 * 
 	 * Note that the known values URL may not be present for some fields.
 	 * 
-	 * INPUTS USER ::= String User’s name PASSWORD ::= String User’s password PROJECT ::= Integer
+	 * INPUTS USER ::= String Userï¿½s name PASSWORD ::= String Userï¿½s password PROJECT ::= Integer
 	 * Project ID
 	 * 
 	 * OUTPUTS If the operation succeeds,
@@ -178,7 +178,7 @@ public class ClientCommunicator {
 	 * ::= URL
 	 * 
 	 * If the operation fails for any reason (e.g., invalid project ID, invalid user name or
-	 * password, the user already has a batch assigned to them, can’t connect to the server,
+	 * password, the user already has a batch assigned to them, canï¿½t connect to the server,
 	 * internal server error, etc.),
 	 * 
 	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n FAILED\n
@@ -202,14 +202,14 @@ public class ClientCommunicator {
 	 * records they have indexed each time they log in. (NOTE: This is the number of individual
 	 * names the user has indexed, not the number of batches. To simplify this calculation, when a
 	 * batch is submitted, give the user credit for indexing all records on the batch, even if they
-	 * didn’t do them all.)
+	 * didnï¿½t do them all.)
 	 * 
 	 * After a batch has been submitted, the Server should allow the batch to be searched by key
 	 * word.
 	 * 
 	 * INPUTS
 	 * 
-	 * USER ::= String User’s name PASSWORD ::= String User’s password BATCH ::= Integer Batch ID
+	 * USER ::= String Userï¿½s name PASSWORD ::= String Userï¿½s password BATCH ::= Integer Batch ID
 	 * RECORD_VALUES ::= Comma-separated list of record values ordered String(,String)* by a
 	 * left-to-right, top-to-bottom traversal of the image
 	 * 
@@ -218,7 +218,7 @@ public class ClientCommunicator {
 	 * FORMAT EXAMPLE OUTPUT ::= TRUE\n
 	 * 
 	 * If the operation fails for any reason (e.g., invalid batch ID, invalid user name or password,
-	 * user doesn’t own the submitted batch, wrong number of values, can’t connect to the server,
+	 * user doesnï¿½t own the submitted batch, wrong number of values, canï¿½t connect to the server,
 	 * internal server error, etc.),
 	 * 
 	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n
@@ -236,7 +236,7 @@ public class ClientCommunicator {
 	 * Returns information about all of the fields for the specified project If no project is
 	 * specified, returns information about all of the fields for all projects in the system
 	 * 
-	 * INPUTS USER ::= String User’s name PASSWORD ::= String User’s password PROJECT ::= Integer |
+	 * INPUTS USER ::= String Userï¿½s name PASSWORD ::= String Userï¿½s password PROJECT ::= Integer |
 	 * Empty
 	 * 
 	 * OUTPUTS If the operation succeeds,
@@ -246,7 +246,7 @@ public class ClientCommunicator {
 	 * FIELD_TITLE ::= String Gender\n 2\n 4\n Age\n
 	 * 
 	 * If the operation fails for any reason (e.g., invalid project ID, invalid user name or
-	 * password, can’t connect to the server, internal server error, etc.),
+	 * password, canï¿½t connect to the server, internal server error, etc.),
 	 * 
 	 * FORMAT EXAMPLE
 	 * 
@@ -267,7 +267,7 @@ public class ClientCommunicator {
 	 * Searches the indexed records for the specified strings
 	 * 
 	 * The user specifies one or more fields to be searched, and one or more strings to search for.
-	 * The fields to be searched are specified by “field ID”. (Note, field IDs are unique across all
+	 * The fields to be searched are specified by ï¿½field IDï¿½. (Note, field IDs are unique across all
 	 * fields in the system.)
 	 * 
 	 * The Server searches all indexed records containing the specified fields for the specified
@@ -279,21 +279,21 @@ public class ClientCommunicator {
 	 * 
 	 * (Batch ID, Image URL, Record Number, Field ID)
 	 * 
-	 * Batch ID is the ID of the batch containing the match. Image URL is the URL of the batch’s
+	 * Batch ID is the ID of the batch containing the match. Image URL is the URL of the batchï¿½s
 	 * image file on the Server. Record Number is the number of the record (or row) on the batch
 	 * that contains the match (top-most record is number one, the one below it is number two,
 	 * etc.). Field ID is the ID of the field in the record that contains the match (this is the
-	 * field’s “ID”, not its “number”).
+	 * fieldï¿½s ï¿½IDï¿½, not its ï¿½numberï¿½).
 	 * 
 	 * Intuitively, Search works by OR-ing the requirements together. For example, if the user
-	 * searches fields 1, 7 for values “a”, “b”, “c”, the result contains all matches for which the
-	 * field is 1 OR 7 and the value is “a” OR “b” OR “c”.
+	 * searches fields 1, 7 for values ï¿½aï¿½, ï¿½bï¿½, ï¿½cï¿½, the result contains all matches for which the
+	 * field is 1 OR 7 and the value is ï¿½aï¿½ OR ï¿½bï¿½ OR ï¿½cï¿½.
 	 * 
 	 * Alternatively, we could say that the result is equivalent to the union of the following
-	 * searches: Field 1 for “a” Field 1 for “b” Field 1 for “c” Field 7 for “a” Field 7 for “b”
-	 * Field 7 for “c”
+	 * searches: Field 1 for ï¿½aï¿½ Field 1 for ï¿½bï¿½ Field 1 for ï¿½cï¿½ Field 7 for ï¿½aï¿½ Field 7 for ï¿½bï¿½
+	 * Field 7 for ï¿½cï¿½
 	 * 
-	 * INPUTS USER ::= String User’s name PASSWORD ::= String User’s password FIELDS ::=
+	 * INPUTS USER ::= String Userï¿½s name PASSWORD ::= String Userï¿½s password FIELDS ::=
 	 * Comma-separated list of fields to be searched <FIELD_ID>(,<FIELD_ID>)* FIELD_ID ::= Integer
 	 * SEARCH_VALUES ::= Comma-separated list of strings to search for String(,String)*
 	 * 
@@ -305,7 +305,7 @@ public class ClientCommunicator {
 	 * ::= URL RECORD_NUM ::= Integer (>= 1) FIELD_ID ::= Integer
 	 * 
 	 * If the operation fails for any reason (e.g., invalid user name or password, invalid field ID,
-	 * no search values, can’t connect to the server, internal server error, etc.),
+	 * no search values, canï¿½t connect to the server, internal server error, etc.),
 	 * 
 	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n FAILED\n
 	 * 
@@ -326,7 +326,7 @@ public class ClientCommunicator {
 	/**
 	 * File Downloads The previous section defines the web service operations that your Server (and
 	 * Client Communicator) must support. Some of these operations return URLs that reference image,
-	 * known data, or field help files that reside in the Server’s file system. When a Client
+	 * known data, or field help files that reside in the Serverï¿½s file system. When a Client
 	 * receives such a URL, it must download the contents (i.e., bytes) of the file referenced by
 	 * the URL. For example, suppose the Client receives the following image URL from the Server:
 	 * 
@@ -340,7 +340,7 @@ public class ClientCommunicator {
 	 * Clients will use HTTP GET requests to download files from your Server. To make this work,
 	 * your Server should implement an HTTP Handler that does the following: 1) Extracts the
 	 * requested URL from the HTTP GET request (i.e., from the HttpExchange) 2) Maps the Path
-	 * portion of the requested URL to the path of the requested file in the Server’s file system.
+	 * portion of the requested URL to the path of the requested file in the Serverï¿½s file system.
 	 * (For example, if the requested URL is http://localhost:1234/images/batch-1.png, and your
 	 * Server stores image files in a directory named /users/fred/cs240/record-indexer/images, the
 	 * Path from the requested URL (/images/batch-1.png) would map to the file path
@@ -356,9 +356,9 @@ public class ClientCommunicator {
 	 * 
 	 * To ensure that your file download HTTP Handler is working properly, you can test it with a
 	 * regular web browser. Just type the URL of the file you want to download into your web
-	 * browser’s URL field, and enter return. The browser will use an HTTP GET request to download
+	 * browserï¿½s URL field, and enter return. The browser will use an HTTP GET request to download
 	 * the file from your Server, and display the contents of the file in your browser. If this
-	 * doesn’t work, something is wrong with your file download.
+	 * doesnï¿½t work, something is wrong with your file download.
 	 * 
 	 * On the Client side, you should add an operation to your Client Communicator class that will
 	 * download a file from your Server. It should take a URL as input, and pass back the contents
@@ -390,7 +390,7 @@ public class ClientCommunicator {
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				// we have an OK connection...
 				InputStream rbody = connection.getInputStream();
-				FileOutputStream fileoutstream = new FileOutputStream("./downloads" + url);
+				FileOutputStream fileoutstream = new FileOutputStream("/download" + url);
 				IOUtils.copy(rbody, fileoutstream);
 			} else {
 				// error
@@ -403,8 +403,11 @@ public class ClientCommunicator {
 	}
 
 	private Object doPost(String urlPath, Object sentdata) {
+		Object response = null;
+		
 		try {
 			URL url = new URL(URL_PREFIX + urlPath);
+			System.out.println("URL location = " + URL_PREFIX + urlPath);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod(HTTP_POST);
 			connection.setDoOutput(true);
@@ -413,8 +416,7 @@ public class ClientCommunicator {
 			connection.getOutputStream().close();
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				// It worked.
-				Object response = xmlstream.fromXML(connection.getInputStream());
-				return response;
+				response = xmlstream.fromXML(connection.getInputStream());
 			} else {
 				// it wasnt OK...
 			}
@@ -428,7 +430,7 @@ public class ClientCommunicator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return sentdata;
+		return response;
 	}
 
 	/**

@@ -12,8 +12,8 @@ import shared.model.Image;
  * 
  * Returns a sample image for the specified project
  * 
- * INPUTS USER ::= String User’s name 
- * PASSWORD ::= String User’s password
+ * INPUTS USER ::= String Userï¿½s name 
+ * PASSWORD ::= String Userï¿½s password
  * PROJECT ::= Integer Project ID
  * 
  * OUTPUTS If the operation succeeds,
@@ -23,7 +23,7 @@ import shared.model.Image;
  * IMAGE_URL ::= URL
  * 
  * If the operation fails for any reason (e.g., invalid project ID, invalid
- * user name or password, can’t connect to the server, internal server
+ * user name or password, canï¿½t connect to the server, internal server
  * error, etc.),
  * 
  * FORMAT EXAMPLE OUTPUT ::= FAILED\n FAILED\n
@@ -49,7 +49,7 @@ public class GetSampleImage_result {
 	 * @param url
 	 * @param result_string
 	 */
-	public GetSampleImage_result(int success, URL url, String result_string) {
+	public GetSampleImage_result(int success, String url, String result_string) {
 		this.success = success;
 		image.setFileurl(url);
 		this.result_string = result_string;

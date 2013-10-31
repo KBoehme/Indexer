@@ -28,6 +28,6 @@ public class Main {
 		//XMLParser xm = new XMLParser();
 		System.out.println("Lets test the Database a little...");
 		Database dbtester = new Database();
-		
+		dbtester.getConnection();
 	}
 }

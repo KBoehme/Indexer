@@ -52,6 +52,7 @@ public class Database {
 		recorddao = new RecordDAO(this);
 		userdao = new UserDAO(this);
 		valuedao = new ValueDAO(this);
+		System.out.println("const. database");
 	}
 	
 	public static void initialize() {
@@ -69,6 +70,7 @@ public class Database {
 			Database.initialize();
 			connection = DriverManager
 					.getConnection(connectionURL);
+			System.out.println("Connected to the database.");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

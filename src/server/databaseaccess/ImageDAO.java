@@ -3,11 +3,14 @@
  */
 package server.databaseaccess;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import server.database.Database;
 import shared.model.Image;
@@ -33,8 +36,39 @@ public class ImageDAO {
 	public void query(Image image) {
 		
 	}
+	public ArrayList<Image> getAllImages() throws MalformedURLException, SQLException {
+		ArrayList<Image> allimages = new ArrayList<Image>();
+		Connection con = database.getConnection();
+		PreparedStatement pstmt = null;
+		Statement stmt = null;
+		ResultSet results = null;
+
+		try {
+			String sql = "SELECT * FROM images";
+			stmt = database.getConnection().prepareStatement(sql);
+			results = stmt.executeQuery(sql);
+			while (results.next()) {
+				// Extract all the information from the image we pulled.
+				int id = results.getInt(1);
+				String url = results.getString(2);
+				int projectid = results.getInt(3);
+				
+				Image image = new Image(id, url, projectid);
+				allimages.add(image);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (results != null)
+				results.close();
+			if (stmt != null)
+				stmt.close();
+		}
+		return allimages;
+	}
 	
-	/** Insert into the database.
+	/** Insert image into the database.
 	 * @throws SQLException 
 	 * 
 	 */
@@ -70,18 +104,69 @@ public class ImageDAO {
 		}
 	}
 	
-	/** Update the databae.
+	/** Update image in the databae.
+	 * @throws SQLException 
 	 * 
 	 */
-	public void update(Image image) {
+	public void update(Image image) throws SQLException {
 		
+		Connection con = database.getConnection();
+		PreparedStatement pstmt = null;
+		Statement stmt = null;
+		ResultSet results = null;
+		
+		try {
+			String addsql = "UPDATE images SET (imagename, password, firstname, lastname, email, num_indexed_records, current_batch_id) VALUES (?,?,?,?,?,?,?)";
+			pstmt = con.prepareStatement(addsql);
+
+			pstmt.setInt(1, image.getID());
+			pstmt.setString(2, image.getFileurl());
+			pstmt.setInt(3, image.getProjectID());
+
+			
+			if(pstmt.executeUpdate() == 1) {
+				System.out.println("Success: image updated.");
+			} else {
+				//ERROR :Q
+				System.out.println("Failed: Unable to update image.");
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (pstmt != null) stmt.close();
+			if (results != null) results.close();
+			if (stmt != null) stmt.close();
+		}
 	}
 	
-	/** Delete something from the database.
+	/** Delete image from the database.
+	 * @throws SQLException 
 	 * 
 	 */
-	public void delete(Image image) {
+	public void delete(Image image) throws SQLException {
 		
+		Connection con = database.getConnection();
+		Statement stmt = null;
+		ResultSet results = null;
+		
+		try {
+			String sql = "DELETE FROM image WHERE id = " + image.getID();
+			stmt = con.prepareStatement(sql);
+			if (stmt.executeUpdate(sql) == 1) {
+				System.out.println("Success: image deleted from database.");
+			} else {
+				System.out.println("Failed: Unable to delete image from database.");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (stmt != null)
+				stmt.close();
+			if (results != null)
+				results.close();
+		}
 	}
 	
 }

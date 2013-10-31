@@ -17,8 +17,9 @@ import java.net.URL;
 public class Image {
 
 	private int ID;
-	private URL fileurl;
+	private String fileurl;
 	private int projectID;
+	private boolean hasbeenindexed;
 
 	/**
 	 * Default constructor
@@ -28,6 +29,7 @@ public class Image {
 		setID(-1);
 		setFileurl(null);
 		setProjectID(-1);
+		hasbeenindexed = false;
 	}
 
 	/**
@@ -35,7 +37,7 @@ public class Image {
 	 * @param file
 	 * @param projectID
 	 */
-	public Image(int iD, URL fileurl, int projectID) {
+	public Image(int iD, String fileurl, int projectID) {
 		this.ID = iD;
 		this.fileurl = fileurl;
 		this.projectID = projectID;
@@ -59,7 +61,7 @@ public class Image {
 	/**
 	 * @return the file
 	 */
-	public URL getFileurl() {
+	public String getFileurl() {
 		return fileurl;
 	}
 
@@ -67,7 +69,7 @@ public class Image {
 	 * @param file
 	 *            the file to set
 	 */
-	public void setFileurl(URL fileurl) {
+	public void setFileurl(String fileurl) {
 		this.fileurl = fileurl;
 	}
 
@@ -85,5 +87,21 @@ public class Image {
 	public void setProjectID(int recordsgroupID) {
 		this.projectID = recordsgroupID;
 	}
+
+	/**
+	 * @return the hasbeenindexed
+	 */
+	public boolean isHasbeenindexed() {
+		return hasbeenindexed;
+	}
+
+	/**
+	 * @param hasbeenindexed the hasbeenindexed to set
+	 */
+	public void setHasbeenindexed(boolean hasbeenindexed) {
+		this.hasbeenindexed = hasbeenindexed;
+	}
+	
+	
 
 }

@@ -35,6 +35,44 @@ public class ValueDAO {
 	}
 
 	/**
+	 * This function will return all of the current values.
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public ArrayList<Value> getAll() throws SQLException {
+		ArrayList<Value> allvalues = new ArrayList<Value>();
+		Connection con = database.getConnection();
+		PreparedStatement pstmt = null;
+		Statement stmt = null;
+		ResultSet results = null;
+
+		try {
+			String sql = "SELECT * FROM values";
+			stmt = database.getConnection().prepareStatement(sql);
+			results = stmt.executeQuery(sql);
+			while (results.next()) {
+				// Extract all the information from the value we pulled.
+				int id = results.getInt(1);
+				String valuestring = results.getString(2);
+				int recordID = results.getInt(3);
+				
+				Value value = new Value(id, valuestring, recordID);
+				allvalues.add(value);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (results != null)
+				results.close();
+			if (stmt != null)
+				stmt.close();
+		}
+		return allvalues;
+	}
+	
+	/**
 	 * Insert value into the database.
 	 * 
 	 * @throws SQLException
@@ -167,43 +205,4 @@ public class ValueDAO {
 		}
 
 	}
-
-	/**
-	 * This function will return all of the current values.
-	 * 
-	 * @return
-	 * @throws SQLException
-	 */
-	public ArrayList<Value> getAll() throws SQLException {
-		ArrayList<Value> allvalues = new ArrayList<Value>();
-		Connection con = database.getConnection();
-		PreparedStatement pstmt = null;
-		Statement stmt = null;
-		ResultSet results = null;
-
-		try {
-			String sql = "SELECT * FROM values";
-			stmt = database.getConnection().prepareStatement(sql);
-			results = stmt.executeQuery(sql);
-			while (results.next()) {
-				// Extract all the information from the value we pulled.
-				int id = results.getInt(1);
-				String valuestring = results.getString(2);
-				int recordID = results.getInt(3);
-				
-				Value value = new Value(id, valuestring, recordID);
-				allvalues.add(value);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			if (results != null)
-				results.close();
-			if (stmt != null)
-				stmt.close();
-		}
-		return allvalues;
-	}
-
 }

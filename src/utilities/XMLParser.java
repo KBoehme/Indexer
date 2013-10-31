@@ -6,7 +6,6 @@ package utilities;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.SQLException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -59,10 +58,11 @@ public class XMLParser {
 		//System.out.println(root);
 		//Lets try to copy over the directory to our file place.
 		File source = new File(root);
-		//System.out.println("Source: " + source);
+		System.out.println("Source: " + source);
 		File target = new File("./files");
 		try {
 			FileUtils.copyDirectory(source, target);
+           // FileUtils.copyFileToDirectory(srcFile, destDir);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -243,7 +243,7 @@ public class XMLParser {
 			// System.out.println(title + ", " + xcoord + ", " + width + ", "
 			// + helphtml + ", " + knowndata);
 
-			Field field = new Field(-1, title, xcoord, width, helphtml, knowndata, i + 1,  projectid);
+			Field field = new Field(-1, title, xcoord, width, helphtml, knowndata, i + 1,  projectid + 1);
 			try {
 				database.getFielddao().insert(field);
 			} catch (SQLException e) {
@@ -273,18 +273,11 @@ public class XMLParser {
 			if (fileElem != null)
 				file = fileElem.getTextContent();
 
-			URL fileurl;
+			// System.out.println(file);
+			Image image = new Image(-1, file, projectid + 1);
 			try {
-				fileurl = new URL("http://x.byu.edu:1234/" + file); //TODO: Figure out this URL part....
-				// System.out.println(file);
-				Image image = new Image(-1, fileurl, projectid);
-				try {
-					database.getImagedao().insert(image);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (MalformedURLException e) {
+				database.getImagedao().insert(image);
+			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

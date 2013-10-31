@@ -13,57 +13,84 @@ import java.util.ArrayList;
  */
 public class Record {
 
-	private int ID;
-	private ArrayList<String> values;
-
+	private int rownumber;
+	private int projectID;
+	private int imageID;
+	private boolean hasvalues;
+	
+	
+	
 	/**
-	 * Default constructor
+	 * @param rownumber
+	 * @param projectID
+	 * @param imageID
+	 * @param hasvalues
 	 */
 	public Record() {
-		// TODO Auto-generated constructor stub
-		setID(-1);
-		setValues(null);
+		this.rownumber = -1;
+		this.projectID = -1;
+		this.imageID = -1;
+		this.hasvalues = false;
+	}
+	
+	
+	public Record(int rownumber, int projectID, int imageID, boolean hasvalues) {
+		this.rownumber = rownumber;
+		this.projectID = projectID;
+		this.imageID = imageID;
+		this.hasvalues = hasvalues;
+	}
+	/**
+	 * @return the rownumber
+	 */
+	public int getRownumber() {
+		return rownumber;
+	}
+	/**
+	 * @param rownumber the rownumber to set
+	 */
+	public void setRownumber(int rownumber) {
+		this.rownumber = rownumber;
+	}
+	/**
+	 * @return the projectID
+	 */
+	public int getProjectID() {
+		return projectID;
+	}
+	/**
+	 * @param projectID the projectID to set
+	 */
+	public void setProjectID(int projectID) {
+		this.projectID = projectID;
+	}
+	/**
+	 * @return the imageID
+	 */
+	public int getImageID() {
+		return imageID;
+	}
+	/**
+	 * @param imageID the imageID to set
+	 */
+	public void setImageID(int imageID) {
+		this.imageID = imageID;
+	}
+
+
+	/**
+	 * @return the hasvalues
+	 */
+	public boolean isHasvalues() {
+		return hasvalues;
 	}
 
 	/**
-	 * @param iD
-	 * @param values
+	 * @param hasvalues the hasvalues to set
 	 */
-	public Record(int iD, ArrayList<String> values) {
-		ID = iD;
-		this.values = values;
+	public void setHasvalues(boolean hasvalues) {
+		this.hasvalues = hasvalues;
 	}
-
-	/**
-	 * @return the iD
-	 */
-	public int getID() {
-		return ID;
-	}
-
-	/**
-	 * @param iD
-	 *            the iD to set
-	 */
-	public void setID(int iD) {
-		ID = iD;
-	}
-
-	/**
-	 * @return the values
-	 */
-	public ArrayList<String> getValues() {
-		return values;
-	}
-
-	/**
-	 * @param values
-	 *            the values to set
-	 */
-	public void setValues(ArrayList<String> values) {
-		for (String s : values) {
-			values.add(s);
-		}
-	}
-
+	
+	
 }
