@@ -1,7 +1,7 @@
 /**
  * 
  */
-package server.webapi;
+package server.handlers;
 
 import java.io.IOException;
 
@@ -12,12 +12,12 @@ import com.sun.net.httpserver.HttpHandler;
  * @author Kevin
  *
  */
-public class SubmitBatchHandler implements HttpHandler  {
+public class DownloadFileHandler implements HttpHandler  {
 
 	/**
 	 * 
 	 */
-	public SubmitBatchHandler() {
+	public DownloadFileHandler() {
 		// TODO Auto-generated constructor stub
 	}
 

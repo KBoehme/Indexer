@@ -80,13 +80,13 @@
 		<javac srcdir="${test}" classpathref="lib-classpath" destdir="${build}" debug="true" includeantruntime="true" />
 	</target>
 	
-	<!-- ant import -Dfile=<INDEXER_DATA_XML_FILE> -->
+	<!-- ant import -Dfile=Records/Records.xml -->
 	<!-- EXAMPLE: ant import -Dfile=dir1/dir2/indexer_data.xml -->
 	<target name="import" depends="compile" description="import indexer data">
 		<copy file="${empty-db-file}" tofile="${db-file}" overwrite="true"/>
-		<java classname="THE NAME OF YOUR DATA IMPORTER CLASS GOES HERE" fork="yes">
+		<java classname="Main.java" fork="yes">
 			<classpath>
-				<path refid="all-classpath"/>
+				<path refid="/src/utilities/Main"/>
 			</classpath>
 			<arg value="${file}"/>
 			<assertions>

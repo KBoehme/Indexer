@@ -3,31 +3,9 @@
  */
 package client.communicator;
 
-import java.net.URL;
-
 import shared.model.Image;
 
 /**
- * GET SAMPLE IMAGE
- * 
- * Returns a sample image for the specified project
- * 
- * INPUTS USER ::= String User�s name 
- * PASSWORD ::= String User�s password
- * PROJECT ::= Integer Project ID
- * 
- * OUTPUTS If the operation succeeds,
- * 
- * FORMAT EXAMPLE OUTPUT ::= <IMAGE_URL>\n
- * 
- * IMAGE_URL ::= URL
- * 
- * If the operation fails for any reason (e.g., invalid project ID, invalid
- * user name or password, can�t connect to the server, internal server
- * error, etc.),
- * 
- * FORMAT EXAMPLE OUTPUT ::= FAILED\n FAILED\n
- * 
  * @author Kevin
  *
  */

@@ -19,13 +19,11 @@ import shared.model.Record;
  */
 public class RecordDAO {
 
-	Database database;
 	/**
 	 * 
 	 */
-	public RecordDAO(Database database) {
+	public RecordDAO() {
 		// TODO Auto-generated constructor stub
-		this.database = database;
 	}
 
 
@@ -35,7 +33,7 @@ public class RecordDAO {
 	 * @return ArrayList<record> allrecords
 	 * @throws SQLException
 	 */
-	public ArrayList<Record> getAll() throws SQLException {
+	public ArrayList<Record> getAll(Database database) throws SQLException {
 		
 		ArrayList<Record> allrecords = new ArrayList<Record>();
 		
@@ -77,7 +75,7 @@ public class RecordDAO {
 	 * Insert record into the database.
 	 * @throws SQLException
 	 */
-	public void insert(Record record) throws SQLException {
+	public void insert(Record record, Database database) throws SQLException {
 
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
@@ -122,7 +120,7 @@ public class RecordDAO {
 	 * @param record
 	 * @throws SQLException 
 	 */
-	public void update(Record record) throws SQLException {
+	public void update(Record record, Database database) throws SQLException {
 		
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
@@ -159,7 +157,7 @@ public class RecordDAO {
 	 * Query the database.
 	 * @param record
 	 */
-	public void query(Record record) {
+	public void query(Record record, Database database) {
 		// Query looks for information given a records input
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
@@ -186,7 +184,7 @@ public class RecordDAO {
 	 * @throws SQLException 
 	 * 
 	 */
-	public void delete(Record record) throws SQLException {
+	public void delete(Record record, Database database) throws SQLException {
 		
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;

@@ -20,13 +20,11 @@ import shared.model.User;
  */
 public class ProjectDAO {
 
-	Database database;
 	/**
 	 * 
 	 */
-	public ProjectDAO(Database database) {
+	public ProjectDAO() {
 		// TODO Auto-generated constructor stub
-		this.database = database;
 	}
 
 	/**
@@ -35,17 +33,20 @@ public class ProjectDAO {
 	 * @return ArrayList<project> allprojects
 	 * @throws SQLException
 	 */
-	public ArrayList<Project> getAll() throws SQLException {
+	public ArrayList<Project> getAll(Database database) throws SQLException {
 		ArrayList<Project> allprojects = new ArrayList<Project>();
+		
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
-		Statement stmt = null;
 		ResultSet results = null;
-
+		
 		try {
 			String sql = "SELECT * FROM projects";
-			stmt = database.getConnection().prepareStatement(sql);
-			results = stmt.executeQuery(sql);
+			pstmt = database.getConnection().prepareStatement(sql);
+			
+			results = pstmt.executeQuery();
+
+					
 			while (results.next()) {
 				// Extract all the information from the project we pulled.
 				int id = results.getInt(1);
@@ -63,17 +64,54 @@ public class ProjectDAO {
 		} finally {
 			if (results != null)
 				results.close();
-			if (stmt != null)
-				stmt.close();
+			if (pstmt != null)
+				pstmt.close();
 		}
 		return allprojects;
 	}
 
+	public Project getProject(int projectid, Database database) throws SQLException {
+		Project project = new Project();
+		
+		Connection con = database.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet results = null;
+		
+		try {
+			String sql = "SELECT * FROM projects WHERE ID = ?";
+			pstmt = database.getConnection().prepareStatement(sql);
+			
+			pstmt.setInt(1, projectid);
+
+			results = pstmt.executeQuery();
+
+					
+			while (results.next()) {
+				// Extract all the information from the project we pulled.
+				int id = results.getInt(1);
+				String title = results.getString(2);
+				int recordsperimage = results.getInt(3);
+				int firstycoord = results.getInt(4);
+				int recordheight = results.getInt(5);
+				
+				project = new Project(id,title, recordsperimage, firstycoord, recordheight);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (results != null)
+				results.close();
+			if (pstmt != null)
+				pstmt.close();
+		}
+		return project;
+	}
 
 	/** Query the database.
 	 * 
 	 */
-	public void query(Project project) {
+	public void query(Project project, Database database) {
 		
 	}
 	
@@ -82,7 +120,7 @@ public class ProjectDAO {
 	 * @throws SQLException 
 	 * 
 	 */
-	public void insert(Project project) throws SQLException {
+	public void insert(Project project, Database database) throws SQLException {
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		Statement stmt = null;
@@ -119,14 +157,14 @@ public class ProjectDAO {
 	/** Update the databae.
 	 * 
 	 */
-	public void update(Project project) {
+	public void update(Project project, Database database) {
 		
 	}
 	
 	/** Delete something from the database.
 	 * 
 	 */
-	public void delete(Project project) {
+	public void delete(Project project, Database database) {
 		
 	}
 }

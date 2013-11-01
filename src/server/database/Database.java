@@ -5,12 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import server.databaseaccess.FieldDAO;
-import server.databaseaccess.ImageDAO;
-import server.databaseaccess.ProjectDAO;
-import server.databaseaccess.RecordDAO;
-import server.databaseaccess.UserDAO;
-import server.databaseaccess.ValueDAO;
+import server.databaseaccess.*;
 
 /**
  * 
@@ -28,7 +23,7 @@ import server.databaseaccess.ValueDAO;
  */
 public class Database {
 
-	private Connection connection = null;
+	private Connection connection;
 
 	private FieldDAO fielddao;
 	private ImageDAO imagedao;
@@ -36,25 +31,27 @@ public class Database {
 	private RecordDAO recorddao;
 	private UserDAO userdao;
 	private ValueDAO valuedao;
-	
+	private ValidateUserDAO validateuserdao;
+
 	private static String dbFile = "indexer_server.sqlite";
 	private static String dbName = "database" + File.separator + dbFile;
-	private static String connectionURL = "jdbc:sqlite:"+dbName;
+	private static String connectionURL = "jdbc:sqlite:" + dbName;
 	private final static String driver = "org.sqlite.JDBC";
-	
+
 	/**
 	 * Default Constructor
 	 */
 	public Database() {
-		fielddao = new FieldDAO(this);
-		imagedao = new ImageDAO(this);
-		projectdao = new ProjectDAO(this);
-		recorddao = new RecordDAO(this);
-		userdao = new UserDAO(this);
-		valuedao = new ValueDAO(this);
-		System.out.println("const. database");
+		connection = null;
+		fielddao = new FieldDAO();
+		imagedao = new ImageDAO();
+		projectdao = new ProjectDAO();
+		recorddao = new RecordDAO();
+		userdao = new UserDAO();
+		valuedao = new ValueDAO();
+		validateuserdao = new ValidateUserDAO();
 	}
-	
+
 	public static void initialize() {
 		try {
 			Class.forName(driver);
@@ -63,25 +60,16 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Connection getConnection() {
-		connection = null;
-		try {
-			Database.initialize();
-			connection = DriverManager
-					.getConnection(connectionURL);
-			System.out.println("Connected to the database.");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return connection;
 	}
 
 	public void startTransaction() {
 		// logger.entering("server.database.Database", "startTransaction");
-		Connection connection = this.getConnection();
+		connection = this.getConnection();
 		try {
+			connection = DriverManager.getConnection(connectionURL);
 			connection.setAutoCommit(false);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -196,6 +184,21 @@ public class Database {
 	 */
 	public void setValuedao(ValueDAO valuedao) {
 		this.valuedao = valuedao;
+	}
+
+	/**
+	 * @return the validateuserdao
+	 */
+	public ValidateUserDAO getValidateuserdao() {
+		return validateuserdao;
+	}
+
+	/**
+	 * @param validateuserdao
+	 *            the validateuserdao to set
+	 */
+	public void setValidateuserdao(ValidateUserDAO validateuserdao) {
+		this.validateuserdao = validateuserdao;
 	}
 
 }

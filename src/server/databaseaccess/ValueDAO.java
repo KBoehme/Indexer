@@ -24,14 +24,11 @@ import shared.model.Value;
  */
 public class ValueDAO {
 
-	Database database;
-
 	/**
 	 *  Default Constructor
 	 */
-	public ValueDAO(Database database) {
+	public ValueDAO() {
 		// TODO Auto-generated constructor stub
-		this.database = database;
 	}
 
 	/**
@@ -40,7 +37,7 @@ public class ValueDAO {
 	 * @return
 	 * @throws SQLException
 	 */
-	public ArrayList<Value> getAll() throws SQLException {
+	public ArrayList<Value> getAll(Database database) throws SQLException {
 		ArrayList<Value> allvalues = new ArrayList<Value>();
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
@@ -77,7 +74,7 @@ public class ValueDAO {
 	 * 
 	 * @throws SQLException
 	 */
-	public void insert(Value value) throws SQLException {
+	public void insert(Value value, Database database) throws SQLException {
 
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
@@ -120,7 +117,7 @@ public class ValueDAO {
 	 * @param value
 	 * @throws SQLException
 	 */
-	public void update(Value value) throws SQLException {
+	public void update(Value value, Database database) throws SQLException {
 
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
@@ -159,7 +156,7 @@ public class ValueDAO {
 	 * 
 	 * @param value
 	 */
-	public void query(Value value) {
+	public void query(Value value, Database database) {
 		// Query looks for information given a values input
 		Connection con = database.getConnection();
 		Statement stmt = null;
@@ -181,7 +178,7 @@ public class ValueDAO {
 	 * 
 	 * @throws SQLException
 	 */
-	public void delete(Value value) throws SQLException {
+	public void delete(Value value, Database database) throws SQLException {
 
 		Connection con = database.getConnection();
 		Statement stmt = null;

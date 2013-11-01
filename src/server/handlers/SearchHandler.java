@@ -1,7 +1,7 @@
 /**
  * 
  */
-package server.webapi;
+package server.handlers;
 
 import java.io.IOException;
 

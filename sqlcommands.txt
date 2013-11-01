@@ -14,7 +14,7 @@ CREATE TABLE Users
 	lastname VARCHAR NOT NULL , 
 	email VARCHAR UNIQUE , 
 	num_indexed_records INTEGER, 
-	current_batch_id INTEGER 
+	current_batch_id INTEGER DEFAULT -1
 );
 CREATE TABLE Projects
 (

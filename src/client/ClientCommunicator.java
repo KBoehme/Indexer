@@ -34,12 +34,9 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  * 
  */
 public class ClientCommunicator {
-	private XStream xmlstream;
 	private String SERVER_HOST;
 	private int SERVER_PORT;
 	private String URL_PREFIX;
-	private static String HTTP_POST = "POST";
-	private static String HTTP_GET = "GET";
 
 	/**
 	 * This is a constuctor
@@ -49,7 +46,6 @@ public class ClientCommunicator {
 		this.SERVER_HOST = "localhost";
 		this.SERVER_PORT = 8080;
 		this.URL_PREFIX = "http://" + SERVER_HOST + ":" + SERVER_PORT;
-		xmlstream = new XStream(new DomDriver());	
 		
 		Server server = new Server(SERVER_PORT);
 		try {
@@ -57,29 +53,24 @@ public class ClientCommunicator {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("server failed to run");
-
 		}
+		
 	}
 	
 	public ClientCommunicator(String host, int port) {
 		SERVER_HOST = host;
 		SERVER_PORT = port;
 		this.URL_PREFIX = "http://" + SERVER_HOST + ":" + SERVER_PORT;
-		xmlstream = new XStream(new DomDriver());
-		
+
 		Server server = new Server(SERVER_PORT);
 		try {
 			server.run();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("server failed to run");
 		}
+		
 	}
-	
-	//Make a constructor that takes in custom server information.
-	
 
 	/**
 	 * VALIDATE USER Validates user credentials
@@ -108,7 +99,8 @@ public class ClientCommunicator {
 	 * @return
 	 */
 	public ValidateUser_result validateUser(ValidateUser_param params) {
-		return (ValidateUser_result) doPost("/ValidateUser", params);
+		ValidateUser_result res = (ValidateUser_result) doPost("/ValidateUser", params);
+		return res;
 	}
 
 	/*
@@ -137,7 +129,7 @@ public class ClientCommunicator {
 	 * @return
 	 */
 	public GetProjects_result getProjects(GetProjects_param params) {
-		return (GetProjects_result) doPost("/getProjects", params);
+		return (GetProjects_result) doPost("/GetProjects", params);
 	}
 
 	/**
@@ -156,58 +148,27 @@ public class ClientCommunicator {
 	 * If the operation fails for any reason (e.g., invalid project ID, invalid user name or
 	 * password, can�t connect to the server, internal server error, etc.),
 	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n FAILED\n
+	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n
 	 * 
 	 * @param params
 	 * @return
 	 */
 	public GetSampleImage_result getSampleImage(GetSampleImage_param params) {
-		GetSampleImage_result results = (GetSampleImage_result) doPost("/getSampleImage", params);
-		downloadFiles(results.toString());
+		GetSampleImage_result results = (GetSampleImage_result) doPost("/GetSampleImage", params);
+		results.getImage().setFileurl(URL_PREFIX +"/"+ results.getImage().getFileurl());
+		//downloadFile(results.getImage().getFileurl());
 		return results;
 	}
 
 	/**
 	 * DOWNLOAD BATCH
-	 * 
 	 * Downloads a batch for the user to index
-	 * 
-	 * The Server should assign the user a batch from the requested project. The Server should not
-	 * return batches that are already assigned to another user. If the user already has a batch
-	 * assigned to them, this operation should fail (i.e., a user is not allowed to have multiple
-	 * batches assigned to them at the same time).
-	 * 
-	 * Note that the known values URL may not be present for some fields.
-	 * 
-	 * INPUTS USER ::= String User�s name PASSWORD ::= String User�s password PROJECT ::= Integer
-	 * Project ID
-	 * 
-	 * OUTPUTS If the operation succeeds,
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= <BATCH_ID>\n 4\n <PROJECT_ID>\n 1\n <IMAGE_URL>\n
-	 * http://localhost:1234/images/img-4.png\n <FIRST_Y_COORD>\n 100\n <RECORD_HEIGHT>\n 50\n
-	 * <NUM_RECORDS>\n 7\n <NUM_FIELDS>\n 2\n <FIELD>+ 23\n 1\n FIELD ::= <FIELD_ID>\n Last Name\n
-	 * <FIELD_NUM>\n http://localhost:1234/help/last.html\n <FIELD_TITLE>\n 125\n <HELP_URL>\n 250\n
-	 * <X_COORD>\n http://localhost:1234/known/last.txt\n <PIXEL_WIDTH>\n 16\n
-	 * (<KNOWN_VALUES_URL>\n)? 2\n First Name\n BATCH_ID ::= Integer
-	 * http://localhost:1234/help/first.html\n PROJECT_ID ::= Integer 375\n FIELD_ID ::= Integer
-	 * 250\n IMAGE_URL ::= URL http://localhost:1234/known/first.txt\n FIRST_Y_COORD ::= Integer
-	 * 20\n RECORD_HEIGHT ::= Integer 3\n NUM_RECORDS ::= Integer Age\n NUM_FIELDS ::= Integer
-	 * http://localhost:1234/help/age.html\n FIELD_NUM ::= Integer (>= 1) 625\n FIELD_TITLE ::=
-	 * String 100\n HELP_URL ::= URL X_COORD ::= Integer PIXEL_WIDTH ::= Integer KNOWN_VALUES_URL
-	 * ::= URL
-	 * 
-	 * If the operation fails for any reason (e.g., invalid project ID, invalid user name or
-	 * password, the user already has a batch assigned to them, can�t connect to the server,
-	 * internal server error, etc.),
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n FAILED\n
 	 * 
 	 * @param params
 	 * @return
 	 */
 	public DownloadBatch_result downloadBatch(DownloadBatch_param params) {
-		DownloadBatch_result results = (DownloadBatch_result) doPost("/downloadBatch", params);
+		DownloadBatch_result results = (DownloadBatch_result) doPost("/DownloadBatch", params);
 		downloadFiles(results.toString());
 		return results;
 	}
@@ -247,7 +208,7 @@ public class ClientCommunicator {
 	 * @return
 	 */
 	public SubmitBatch_result submitBatch(SubmitBatch_param params) {
-		return (SubmitBatch_result) doPost("/submitBatch", params);
+		return (SubmitBatch_result) doPost("/SubmitBatch", params);
 	}
 
 	/**
@@ -271,14 +232,12 @@ public class ClientCommunicator {
 	 * FORMAT EXAMPLE
 	 * 
 	 * OUTPUT ::= FAILED\n FAILED\n
-	 */
-
-	/**
+	 *
 	 * @param params
 	 * @return
 	 */
 	public GetFields_result getFields(GetFields_param params) {
-		return (GetFields_result) doPost("/getFields", params);
+		return (GetFields_result) doPost("/GetFields", params);
 	}
 
 	/**
@@ -333,12 +292,8 @@ public class ClientCommunicator {
 	 * @param params
 	 * @return Search_result
 	 */
-	/**
-	 * @param params
-	 * @return
-	 */
 	public Search_result search(Search_param params) {
-		Search_result results = (Search_result) doPost("/search", params);
+		Search_result results = (Search_result) doPost("/Search", params);
 		downloadFiles(results.toString());
 		return results;
 	}
@@ -390,22 +345,23 @@ public class ClientCommunicator {
 	 * @return
 	 */
 	public void downloadFile(String linktofile) {
-		String[] string_split = linktofile.split("\\n");
-		for (String string : string_split) {
-			try {
-				URL url = new URL(string);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+		// take the string and parse on newlines
+		String fileurl = linktofile.substring(14);
+				
+		try {
+			URL url = new URL(fileurl);
+			doGet(url);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 	}
 
 	private void doGet(URL url) {
 		try {
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod(HTTP_GET);
+			connection.setRequestMethod("GET");
 			connection.connect();
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				// we have an OK connection...
@@ -422,33 +378,42 @@ public class ClientCommunicator {
 
 	}
 
-	private Object doPost(String urlPath, Object sentdata) {
+	private Object doPost(String urlPath, Object postdata) {
+		HttpURLConnection connection = null;
 		Object response = null;
+		XStream xmlstream = new XStream(new DomDriver());
 		
 		try {
 			URL url = new URL(URL_PREFIX + urlPath);
-			System.out.println("URL location = " + URL_PREFIX + urlPath);
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod(HTTP_POST);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("POST");
 			connection.setDoOutput(true);
+			connection.setDoInput(true);
 			connection.connect();
-			xmlstream.toXML(sentdata, connection.getOutputStream());
+			
+			xmlstream.toXML(postdata, connection.getOutputStream());
 			connection.getOutputStream().close();
+			
+			
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				// It worked.
 				response = xmlstream.fromXML(connection.getInputStream());
 			} else {
-				// it wasnt OK...
+
 			}
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			connection.disconnect();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println("we have io error");
 			e.printStackTrace();
+		} finally {
+			try {
+				connection.getInputStream().close();
+				connection.disconnect();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return response;
 	}
@@ -459,18 +424,6 @@ public class ClientCommunicator {
 	 * @param filelist
 	 */
 	private void downloadFiles(String filelist) {
-		// take the string and parse on newliness
-		String[] files = filelist.split("\\n");
-		for (String file : files) {
-			URL url;
-			try {
-				url = new URL(file);
-				doGet(url);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
+		
 	}
 }

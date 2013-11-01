@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import server.database.Database;
-import server.webapi.*;
+import server.handlers.*;
 
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -29,7 +29,6 @@ public class Server {
 	}
 
 	public Server(int port) {
-		System.out.println("port on server = " + port);
 		SERVER_PORT = port;
 	}
 
@@ -62,7 +61,6 @@ public class Server {
 		server.createContext("/Search", searchhandler);
 		server.createContext("/download", downloadFileHandler);
 
-		System.out.println("Server is started.");
 		server.start();
 	}
 }

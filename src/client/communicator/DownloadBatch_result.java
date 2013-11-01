@@ -22,7 +22,7 @@ import shared.model.Project;
  * 
  * Note that the known values URL may not be present for some fields.
  * 
- * INPUTS USER ::= String User’s name PASSWORD ::= String User’s password
+ * INPUTS USER ::= String Userï¿½s name PASSWORD ::= String Userï¿½s password
  * PROJECT ::= Integer Project ID
  * 
  * OUTPUTS If the operation succeeds,
@@ -42,7 +42,7 @@ import shared.model.Project;
  * Integer KNOWN_VALUES_URL ::= URL
  * 
  * If the operation fails for any reason (e.g., invalid project ID, invalid user
- * name or password, the user already has a batch assigned to them, can’t
+ * name or password, the user already has a batch assigned to them, canï¿½t
  * connect to the server, internal server error, etc.),
  * 
  * FORMAT EXAMPLE OUTPUT ::= FAILED\n FAILED\n
@@ -54,7 +54,6 @@ public class DownloadBatch_result {
 
 	//do we need these?
 	private int num_records;
-	private int num_fields;
 //-----------------------------
 	
 	
@@ -64,6 +63,78 @@ public class DownloadBatch_result {
 	private ArrayList<Field> fields;
 
 	private String result_string;
+
+	
+	
+	/**
+	 * @return the num_records
+	 */
+	public int getNum_records() {
+		return num_records;
+	}
+
+	/**
+	 * @param num_records the num_records to set
+	 */
+	public void setNum_records(int num_records) {
+		this.num_records = num_records;
+	}
+
+	/**
+	 * @return the success
+	 */
+	public int getSuccess() {
+		return success;
+	}
+
+	/**
+	 * @param success the success to set
+	 */
+	public void setSuccess(int success) {
+		this.success = success;
+	}
+
+	/**
+	 * @return the project
+	 */
+	public Project getProject() {
+		return project;
+	}
+
+	/**
+	 * @param project the project to set
+	 */
+	public void setProject(Project project) {
+		this.project = project;
+	}
+
+	/**
+	 * @return the image
+	 */
+	public Image getImage() {
+		return image;
+	}
+
+	/**
+	 * @param image the image to set
+	 */
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
+	/**
+	 * @return the fields
+	 */
+	public ArrayList<Field> getFields() {
+		return fields;
+	}
+
+	/**
+	 * @param fields the fields to set
+	 */
+	public void setFields(ArrayList<Field> fields) {
+		this.fields = fields;
+	}
 
 	/**
 	 * 
@@ -81,7 +152,7 @@ public class DownloadBatch_result {
 			srb.append(project.getFirstycoord() + "\n");
 			srb.append(project.getRecordheight() + "\n");
 			srb.append(this.num_records + "\n");
-			srb.append(this.num_fields + "\n");
+			srb.append(this.getFields().size() + "\n");
 			for(Field field : fields) {
 				srb.append(field.getID() + "\n");
 				srb.append(field.getField_number() + "\n");

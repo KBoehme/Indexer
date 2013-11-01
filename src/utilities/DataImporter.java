@@ -17,46 +17,23 @@ import server.database.Database;
  */
 public class DataImporter {
 
-	Database database;
-
 	/**
 	 * Default Constructor
 	 * 
 	 */
-	public DataImporter() {
+	public DataImporter(String pathtoxml, Database database) {
 		// TODO Auto-generated constructor stub
-		database = new Database();
-	}
-
-	/**
-	 * @param full
-	 *            path to XML file
-	 */
-	public static void main(String[] args) {
-		System.out.println("main");
 		try {
-			// This standalone program takes in one argument which is the
-			// relative or absolute path to the XML file.
-			String pathtoxml = args[0];
-
-			// First delete all tables from SQLite database and directory
-			// structure
-
-			DataImporter di = new DataImporter();
-			di.database.startTransaction();
-			di.createAllTables();
-
-			// Second populate the database with the XML contents
-			XMLParser xmlparser = new XMLParser(pathtoxml);
-			// Third copy all files (knownsdata, helphtml, and images) to the
-			// servers directory
-		} catch (Exception e) {
-			System.out.println("USAGE: java DataImporter [path_to_xml_file]");
-			// throw e;
+			this.createAllTables(database);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
+		XMLParser xmlparser = new XMLParser(pathtoxml, database);
 	}
 
-	private void createAllTables() throws SQLException {
+	public void createAllTables(Database database) throws SQLException {
 		// TODO : figure out how to use this stuff??
 
 		System.out.println("create all tables");
@@ -78,6 +55,7 @@ public class DataImporter {
 			try {
 				stmt = database.getConnection().createStatement();
 				stmt.executeUpdate(SQLcreatetable);
+				System.out.println(SQLcreatetable);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

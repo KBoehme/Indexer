@@ -1,7 +1,7 @@
 /**
  * 
  */
-package server.webapi;
+package server.handlers;
 
 import java.io.IOException;
 
@@ -12,12 +12,12 @@ import com.sun.net.httpserver.HttpHandler;
  * @author Kevin
  *
  */
-public class DownloadBatchHandler implements HttpHandler  {
+public class SubmitBatchHandler implements HttpHandler  {
 
 	/**
 	 * 
 	 */
-	public DownloadBatchHandler() {
+	public SubmitBatchHandler() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -27,9 +27,6 @@ public class DownloadBatchHandler implements HttpHandler  {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		// TODO Auto-generated method stub
-		
-		//This is where we handle the request.
-		
 		
 	}
 

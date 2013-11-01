@@ -46,25 +46,22 @@ public class XMLParser {
 	 * 
 	 * @param xmllocation
 	 */
-	public XMLParser(String xmllocation) {
-		database = new Database();
+	public XMLParser(String xmllocation, Database database) {
+		this.database = database;
 		xml = new File(xmllocation);
 		// get the parent folder and its absolute path... Set it as root.
 		root = xml.getParentFile().getAbsolutePath();
-		//System.out.println(root);
+		System.out.println(root);
 		//Lets try to copy over the directory to our file place.
 		File source = new File(root);
-		System.out.println("Source: " + source);
-		File target = new File("./files");
+		File target = new File("./ImportedData");
 		try {
 			FileUtils.copyDirectory(source, target);
-           // FileUtils.copyFileToDirectory(srcFile, destDir);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
-		// TODO Auto-generated constructor stub
 		/*
 		 * Need to parse the XML document and populate the database with the information. Create new
 		 * users and new projects...
@@ -129,17 +126,10 @@ public class XMLParser {
 			if (indexedrecordsElem != null)
 				indexedrecords = Integer.valueOf(indexedrecordsElem.getTextContent());
 
-			// System.out.println(username + ", " + password + ", " + firstname
-			// + ", " + lastname + ", " + email + ", " + indexedrecords);
-
-			// OK we have each of the users at this point... Lets add them to
-			// the database.
-			// maybe make a shared user model class with the information and
-			// then add it to the database.
 			User user = new User(username, password, firstname, lastname, email, indexedrecords, -1);
 			// ok we have a new user... now what? UserDAO!!!!
 			try {
-				database.getUserdao().insert(user);
+				database.getUserdao().insert(user, database);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -153,10 +143,7 @@ public class XMLParser {
 	 * @param doc
 	 */
 	public void parseProjects(Document doc) {
-		//System.out.println("parse PROJECTS");
 
-		// TODO: do we need to do anything with the Projects and Users
-		// supertags??
 		NodeList projectlist = doc.getElementsByTagName("project");
 		for (int i = 0; i < projectlist.getLength(); ++i) {
 
@@ -193,7 +180,7 @@ public class XMLParser {
 
 			Project project = new Project(-1, title, recordsperimage, firstycoord, recordheight);
 			try {
-				database.getProjectdao().insert(project);
+				database.getProjectdao().insert(project, database);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -241,7 +228,7 @@ public class XMLParser {
 
 			Field field = new Field(-1, title, xcoord, width, helphtml, knowndata, i + 1,  projectid + 1);
 			try {
-				database.getFielddao().insert(field);
+				database.getFielddao().insert(field, database);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -267,12 +254,12 @@ public class XMLParser {
 
 			String file = null;
 			if (fileElem != null)
-				file = fileElem.getTextContent();
-
+				file = root + fileElem.getTextContent();
+			
 			// System.out.println(file);
 			Image image = new Image(-1, file, projectid + 1);
 			try {
-				database.getImagedao().insert(image);
+				database.getImagedao().insert(image, database);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
