@@ -1,9 +1,11 @@
 /**
  * 
  */
-package client.communicator;
+package shared.communication;
 
 import java.util.ArrayList;
+
+import shared.model.Record;
 
 /**
  * @author Kevin
@@ -14,13 +16,13 @@ public class SubmitBatch_param {
 	private String username;
 	private String password;
 	private int imageid;
-	private ArrayList<String> record_values;
+	private ArrayList<Record> record_values;
 	
 	/**
 	 * 
 	 */
 	public SubmitBatch_param() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	/**
@@ -29,7 +31,7 @@ public class SubmitBatch_param {
 	 * @param imageid
 	 * @param record_values
 	 */
-	public SubmitBatch_param(String username, String password, int imageid, ArrayList<String> record_values) {
+	public SubmitBatch_param(String username, String password, int imageid, ArrayList<Record> record_values) {
 		// TODO Auto-generated constructor stub
 		this.username = username;
 		this.password = password;
@@ -82,14 +84,14 @@ public class SubmitBatch_param {
 	/**
 	 * @return the record_values
 	 */
-	public ArrayList<String> getRecord_values() {
+	public ArrayList<Record> getRecord_values() {
 		return record_values;
 	}
 
 	/**
 	 * @param record_values the record_values to set
 	 */
-	public void setRecord_values(ArrayList<String> record_values) {
+	public void setRecord_values(ArrayList<Record> record_values) {
 		this.record_values = record_values;
 	}
 }

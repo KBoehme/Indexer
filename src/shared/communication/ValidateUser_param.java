@@ -1,31 +1,33 @@
 /**
  * 
  */
-package client.communicator;
+package shared.communication;
+
+import shared.model.User;
 
 /**
  * @author Kevin
  *
  */
-public class GetProjects_param {
-	
+public class ValidateUser_param {
+
 	private String username;
 	private String password;
+	
+	private User user;
 
 	/**
 	 * 
 	 */
-	public GetProjects_param() {
+	public ValidateUser_param() {
 		// TODO Auto-generated constructor stub
+		user = null;
 	}
-
-	/**
-	 * @param username
-	 * @param password
-	 */
-	public GetProjects_param(String username, String password) {
+	
+	public ValidateUser_param(String username, String password) {
+		// TODO Auto-generated constructor stub
 		this.username = username;
-		this.password = password;
+		this.username = password;
 	}
 
 	/**
@@ -57,5 +59,4 @@ public class GetProjects_param {
 	}
 	
 	
-
 }

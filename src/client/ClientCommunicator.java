@@ -1,30 +1,30 @@
 package client;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
 
 import server.Server;
-import client.communicator.DownloadBatch_param;
-import client.communicator.DownloadBatch_result;
-import client.communicator.GetFields_param;
-import client.communicator.GetFields_result;
-import client.communicator.GetProjects_param;
-import client.communicator.GetProjects_result;
-import client.communicator.GetSampleImage_param;
-import client.communicator.GetSampleImage_result;
-import client.communicator.Search_param;
-import client.communicator.Search_result;
-import client.communicator.SubmitBatch_param;
-import client.communicator.SubmitBatch_result;
-import client.communicator.ValidateUser_param;
-import client.communicator.ValidateUser_result;
+import shared.communication.DownloadBatch_param;
+import shared.communication.DownloadBatch_result;
+import shared.communication.GetFields_param;
+import shared.communication.GetFields_result;
+import shared.communication.GetProjects_param;
+import shared.communication.GetProjects_result;
+import shared.communication.GetSampleImage_param;
+import shared.communication.GetSampleImage_result;
+import shared.communication.Search_param;
+import shared.communication.Search_result;
+import shared.communication.SubmitBatch_param;
+import shared.communication.SubmitBatch_result;
+import shared.communication.ValidateUser_param;
+import shared.communication.ValidateUser_result;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -39,14 +39,14 @@ public class ClientCommunicator {
 	private String URL_PREFIX;
 
 	/**
-	 * This is a constuctor
+	 * This is a constuctor with default port and localhost.
 	 */
 	public ClientCommunicator() {
 		// TODO Auto-generated constructor stub
 		this.SERVER_HOST = "localhost";
 		this.SERVER_PORT = 8080;
 		this.URL_PREFIX = "http://" + SERVER_HOST + ":" + SERVER_PORT;
-		
+
 		Server server = new Server(SERVER_PORT);
 		try {
 			server.run();
@@ -54,9 +54,15 @@ public class ClientCommunicator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
+	/**
+	 * Constructor that takes host and port.
+	 * 
+	 * @param host
+	 * @param port
+	 */
 	public ClientCommunicator(String host, int port) {
 		SERVER_HOST = host;
 		SERVER_PORT = port;
@@ -69,31 +75,11 @@ public class ClientCommunicator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	/**
 	 * VALIDATE USER Validates user credentials
-	 * <p>
-	 * INPUTS
-	 * 
-	 * USER ::= String User�s name PASSWORD ::= String User�s password
-	 * 
-	 * OUTPUTS If the user credentials are valid,
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= TRUE\n <USER_FIRST_NAME>\n <USER_LAST_NAME>\n <NUM_RECORDS>\n
-	 * 
-	 * USER_FIRST_NAME ::= String USER_LAST_NAME ::= String String NUM_RECORDS ::= Integer
-	 * 
-	 * If the user credentials are invalid,
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= FALSE\n
-	 * 
-	 * If the operation fails for any reason (e.g., can�t connect to the server, internal server
-	 * error, etc.),
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n
-	 * </p>
 	 * 
 	 * @param params
 	 * @return
@@ -103,29 +89,9 @@ public class ClientCommunicator {
 		return res;
 	}
 
-	/*
-	 * GET PROJECTS
-	 * 
-	 * Returns information about all of the available projects
-	 * 
-	 * INPUTS USER ::= String User�s name PASSWORD ::= String User�s password
-	 * 
-	 * OUTPUTS If the operation succeeds,
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= <PROJECT_INFO>\n
-	 * 
-	 * PROJECT_INFO ::= <PROJECT_ID>\n<PROJECT_TITLE>\n PROJECT_ID ::= Integer\n PROJECT_TITLE ::=
-	 * String
-	 * 
-	 * 
-	 * If the operation fails for any reason (e.g., invalid user name or password, can�t connect to
-	 * the server, internal server error, etc.),
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n FAILED\n
-	 * 
+	/**GET PROJECTS Returns information about all of the available projects
 	 * 
 	 * @param params
-	 * 
 	 * @return
 	 */
 	public GetProjects_result getProjects(GetProjects_param params) {
@@ -133,76 +99,32 @@ public class ClientCommunicator {
 	}
 
 	/**
-	 * GET SAMPLE IMAGE
-	 * 
-	 * Returns a sample image for the specified project
-	 * 
-	 * INPUTS USER ::= String User�s name PASSWORD ::= String User�s password PROJECT ::= Integer
-	 * Project ID
-	 * 
-	 * OUTPUTS If the operation succeeds,
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= <IMAGE_URL>\n http://localhost:1234/images/batch-1.png\n IMAGE_URL
-	 * ::= URL
-	 * 
-	 * If the operation fails for any reason (e.g., invalid project ID, invalid user name or
-	 * password, can�t connect to the server, internal server error, etc.),
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n
+	 * GET SAMPLE IMAGE Returns a sample image for the specified project
 	 * 
 	 * @param params
 	 * @return
 	 */
 	public GetSampleImage_result getSampleImage(GetSampleImage_param params) {
 		GetSampleImage_result results = (GetSampleImage_result) doPost("/GetSampleImage", params);
-		results.getImage().setFileurl(URL_PREFIX +"/"+ results.getImage().getFileurl());
-		//downloadFile(results.getImage().getFileurl());
+		results.getImage().setFileurl(URL_PREFIX + "/" + "Download/" + results.getImage().getFileurl());
+		downloadFile(results.getImage().getFileurl());
 		return results;
 	}
 
 	/**
-	 * DOWNLOAD BATCH
-	 * Downloads a batch for the user to index
+	 * DOWNLOAD BATCH Downloads a batch for the user to index
 	 * 
 	 * @param params
 	 * @return
 	 */
 	public DownloadBatch_result downloadBatch(DownloadBatch_param params) {
 		DownloadBatch_result results = (DownloadBatch_result) doPost("/DownloadBatch", params);
-		downloadFiles(results.toString());
+		// downloadFiles(results.toString());
 		return results;
 	}
 
 	/**
-	 * SUBMIT BATCH
-	 * 
-	 * Submits the indexed record field values for a batch to the Server
-	 * 
-	 * The Server should un-assign the user from the submitted batch. The Server should increment
-	 * the total number of records indexed by the user so that the system can tell the user how many
-	 * records they have indexed each time they log in. (NOTE: This is the number of individual
-	 * names the user has indexed, not the number of batches. To simplify this calculation, when a
-	 * batch is submitted, give the user credit for indexing all records on the batch, even if they
-	 * didn�t do them all.)
-	 * 
-	 * After a batch has been submitted, the Server should allow the batch to be searched by key
-	 * word.
-	 * 
-	 * INPUTS
-	 * 
-	 * USER ::= String User�s name PASSWORD ::= String User�s password BATCH ::= Integer Batch ID
-	 * RECORD_VALUES ::= Comma-separated list of record values ordered String(,String)* by a
-	 * left-to-right, top-to-bottom traversal of the image
-	 * 
-	 * OUTPUTS If the operation succeeds,
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= TRUE\n
-	 * 
-	 * If the operation fails for any reason (e.g., invalid batch ID, invalid user name or password,
-	 * user doesn�t own the submitted batch, wrong number of values, can�t connect to the server,
-	 * internal server error, etc.),
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n
+	 * SUBMIT BATCH Submits the indexed record field values for a batch to the Server
 	 * 
 	 * @param params
 	 * @return
@@ -212,27 +134,11 @@ public class ClientCommunicator {
 	}
 
 	/**
-	 * GET FIELDS
-	 * 
-	 * Returns information about all of the fields for the specified project If no project is
-	 * specified, returns information about all of the fields for all projects in the system
-	 * 
-	 * INPUTS USER ::= String User�s name PASSWORD ::= String User�s password PROJECT ::= Integer |
-	 * Empty
-	 * 
-	 * OUTPUTS If the operation succeeds,
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= <FIELD_INFO>+ 2\n 1\n FIELD_INFO ::= <PROJECT_ID>\n Last Name\n
-	 * <FIELD_ID>\n 2\n <FIELD_TITLE>\n PROJECT_ID ::= Integer 2\n FIELD_ID ::= Integer 3\n
-	 * FIELD_TITLE ::= String Gender\n 2\n 4\n Age\n
-	 * 
-	 * If the operation fails for any reason (e.g., invalid project ID, invalid user name or
-	 * password, can�t connect to the server, internal server error, etc.),
-	 * 
-	 * FORMAT EXAMPLE
+	 * GET FIELDS Returns information about all of the fields for the specified project If no project is specified, returns
+	 * information about all of the fields for all projects in the system
 	 * 
 	 * OUTPUT ::= FAILED\n FAILED\n
-	 *
+	 * 
 	 * @param params
 	 * @return
 	 */
@@ -241,148 +147,78 @@ public class ClientCommunicator {
 	}
 
 	/**
-	 * SEARCH
-	 * 
-	 * Searches the indexed records for the specified strings
-	 * 
-	 * The user specifies one or more fields to be searched, and one or more strings to search for.
-	 * The fields to be searched are specified by �field ID�. (Note, field IDs are unique across all
-	 * fields in the system.)
-	 * 
-	 * The Server searches all indexed records containing the specified fields for the specified
-	 * strings, and returns a list of all matches. In order to constitute a match, a value must
-	 * appear in one of the search fields, and be exactly equal (ignoring case) to one of the search
-	 * strings.
-	 * 
-	 * For each match found, the Server returns a tuple of the following form:
-	 * 
-	 * (Batch ID, Image URL, Record Number, Field ID)
-	 * 
-	 * Batch ID is the ID of the batch containing the match. Image URL is the URL of the batch�s
-	 * image file on the Server. Record Number is the number of the record (or row) on the batch
-	 * that contains the match (top-most record is number one, the one below it is number two,
-	 * etc.). Field ID is the ID of the field in the record that contains the match (this is the
-	 * field�s �ID�, not its �number�).
-	 * 
-	 * Intuitively, Search works by OR-ing the requirements together. For example, if the user
-	 * searches fields 1, 7 for values �a�, �b�, �c�, the result contains all matches for which the
-	 * field is 1 OR 7 and the value is �a� OR �b� OR �c�.
-	 * 
-	 * Alternatively, we could say that the result is equivalent to the union of the following
-	 * searches: Field 1 for �a� Field 1 for �b� Field 1 for �c� Field 7 for �a� Field 7 for �b�
-	 * Field 7 for �c�
-	 * 
-	 * INPUTS USER ::= String User�s name PASSWORD ::= String User�s password FIELDS ::=
-	 * Comma-separated list of fields to be searched <FIELD_ID>(,<FIELD_ID>)* FIELD_ID ::= Integer
-	 * SEARCH_VALUES ::= Comma-separated list of strings to search for String(,String)*
-	 * 
-	 * OUTPUTS If the operation succeeds,
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= <SEARCH_RESULT>* 4\n http://localhost:1234/images/img-4.png\n
-	 * SEARCH_RESULT ::= 3\n <BATCH_ID>\n 14\n <IMAGE_URL>\n 7\n <RECORD_NUM>\n
-	 * http://localhost:1234/images/img-7.png\n <FIELD_ID>\n 5\n 9\n BATCH_ID ::= Integer IMAGE_URL
-	 * ::= URL RECORD_NUM ::= Integer (>= 1) FIELD_ID ::= Integer
-	 * 
-	 * If the operation fails for any reason (e.g., invalid user name or password, invalid field ID,
-	 * no search values, can�t connect to the server, internal server error, etc.),
-	 * 
-	 * FORMAT EXAMPLE OUTPUT ::= FAILED\n FAILED\n
-	 * 
+	 * SEARCH Searches the indexed records for the specified string.
 	 * 
 	 * @param params
 	 * @return Search_result
 	 */
 	public Search_result search(Search_param params) {
 		Search_result results = (Search_result) doPost("/Search", params);
-		downloadFiles(results.toString());
+		downloadFile(results.toString());
 		return results;
 	}
 
 	/**
-	 * File Downloads The previous section defines the web service operations that your Server (and
-	 * Client Communicator) must support. Some of these operations return URLs that reference image,
-	 * known data, or field help files that reside in the Server�s file system. When a Client
-	 * receives such a URL, it must download the contents (i.e., bytes) of the file referenced by
-	 * the URL. For example, suppose the Client receives the following image URL from the Server:
-	 * 
-	 * http://localhost:1234/images/batch-1.png
-	 * 
-	 * Before the Client can display the image to the user, it must first retrieve (i.e., download)
-	 * the bytes of the image file from the Server. Similarly, if the Client receives the URL of a
-	 * known data file or a field help file from the Server, it must download the content of those
-	 * files before it can use them.
-	 * 
-	 * Clients will use HTTP GET requests to download files from your Server. To make this work,
-	 * your Server should implement an HTTP Handler that does the following: 1) Extracts the
-	 * requested URL from the HTTP GET request (i.e., from the HttpExchange) 2) Maps the Path
-	 * portion of the requested URL to the path of the requested file in the Server�s file system.
-	 * (For example, if the requested URL is http://localhost:1234/images/batch-1.png, and your
-	 * Server stores image files in a directory named /users/fred/cs240/record-indexer/images, the
-	 * Path from the requested URL (/images/batch-1.png) would map to the file path
-	 * /users/fred/cs240/record-indexer/images/batch-1.png) 3) Opens the requested file, and passes
-	 * back the contents (i.e., bytes) of the file back to the client through the HTTP response body
-	 * (i.e., through the HttpExchange)
-	 * 
-	 * NOTE: The file download HTTP Handler is different from the other HTTP Handlers in your
-	 * Server. The other HTTP Handlers process web service requests from the Client, and use object
-	 * serialization to receive inputs from and pass outputs to the Client. However, the file
-	 * download HTTP Handler does not use object serialization at all. It simply returns the bytes
-	 * of the requested file back to the client through the HttpExchange.
-	 * 
-	 * To ensure that your file download HTTP Handler is working properly, you can test it with a
-	 * regular web browser. Just type the URL of the file you want to download into your web
-	 * browser�s URL field, and enter return. The browser will use an HTTP GET request to download
-	 * the file from your Server, and display the contents of the file in your browser. If this
-	 * doesn�t work, something is wrong with your file download.
-	 * 
-	 * On the Client side, you should add an operation to your Client Communicator class that will
-	 * download a file from your Server. It should take a URL as input, and pass back the contents
-	 * (i.e., bytes) of the requested file as output. Internally, this operation should use an HTTP
-	 * GET request to download the contents of the file from your Server.
-	 * 
+	 * DOWNLOAD FILE
 	 * 
 	 * @param linktofile
 	 * @return
 	 */
 	public void downloadFile(String linktofile) {
-		// take the string and parse on newlines
-		String fileurl = linktofile.substring(14);
-				
-		try {
-			URL url = new URL(fileurl);
-			doGet(url);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		// "http://localhost:39640/Download/users/guest/k/kboehme1/git/Indexer/Recordsimages/1890_image0.png"
+		
+		doGet(linktofile);
 	}
 
-	private void doGet(URL url) {
+	/**
+	 * doGet performs a HTTP get request.
+	 * 
+	 * @param urlpath
+	 */
+	private void doGet(String urlpath) {
+		HttpURLConnection connection = null;
+
 		try {
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			URL url = new URL(urlpath);
+			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
+			connection.setRequestProperty("Accept", "test/html");
 			connection.connect();
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				// we have an OK connection...
-				InputStream rbody = connection.getInputStream();
-				FileOutputStream fileoutstream = new FileOutputStream("/download" + url);
-				IOUtils.copy(rbody, fileoutstream);
+				byte[] bytes = IOUtils.toByteArray(connection.getInputStream());
+				writeFile(bytes);
 			} else {
-				// error
+				System.out.println("Unable to write file..");
 			}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				connection.getInputStream().close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			connection.disconnect();
+
 		}
 
 	}
 
+	/**
+	 * doPost performs a post HTTP post request.
+	 * 
+	 * @param urlPath
+	 * @param postdata
+	 * @return
+	 */
 	private Object doPost(String urlPath, Object postdata) {
 		HttpURLConnection connection = null;
 		Object response = null;
 		XStream xmlstream = new XStream(new DomDriver());
-		
+
 		try {
 			URL url = new URL(URL_PREFIX + urlPath);
 			connection = (HttpURLConnection) url.openConnection();
@@ -390,11 +226,10 @@ public class ClientCommunicator {
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
 			connection.connect();
-			
+
 			xmlstream.toXML(postdata, connection.getOutputStream());
 			connection.getOutputStream().close();
-			
-			
+
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				// It worked.
 				response = xmlstream.fromXML(connection.getInputStream());
@@ -423,7 +258,20 @@ public class ClientCommunicator {
 	 * 
 	 * @param filelist
 	 */
-	private void downloadFiles(String filelist) {
-		
+	private void writeFile(byte[] bytes) {
+		File file = new File("./image.png");
+		try {
+			FileOutputStream fout = new FileOutputStream(file);
+			IOUtils.write(bytes, fout);
+			for (Byte bite : bytes) {
+				fout.write(bite);
+			}
+			fout.close();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

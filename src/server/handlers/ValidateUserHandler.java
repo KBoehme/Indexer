@@ -8,9 +8,10 @@ import java.net.HttpURLConnection;
 import java.sql.SQLException;
 
 import server.database.Database;
+import shared.communication.SubmitBatch_param;
+import shared.communication.ValidateUser_param;
+import shared.communication.ValidateUser_result;
 import shared.model.User;
-import client.communicator.ValidateUser_param;
-import client.communicator.ValidateUser_result;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -21,78 +22,48 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  * @author Kevin
  * 
  */
-public class ValidateUserHandler implements HttpHandler {
-
-	boolean isvaliduser = false;
-	Database database;
+public class ValidateUserHandler extends BaseHandler implements HttpHandler {
 
 	/**
 	 * Default Constructor
 	 */
 	public ValidateUserHandler() {
-		
+		super();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.sun.net.httpserver.HttpHandler#handle(com.sun.net.httpserver.HttpExchange)
 	 */
 	@Override
-	public void handle(HttpExchange exchange){
+	public void handle(HttpExchange exchange) throws IOException {
+		
+		ValidateUser_result result = new ValidateUser_result();
+		User user = null;
 		try {
-			database = new Database();
-			database.startTransaction();
-			XStream xmlstream = new XStream(new DomDriver());
+			super.startHandler();
 			
 			ValidateUser_param param = (ValidateUser_param) xmlstream.fromXML(exchange.getRequestBody());
+			exchange.getRequestBody().close();
 			
-			try {
-				exchange.getRequestBody().close();
-			} catch (IOException e) {
-				System.out.println("IO exception in the server.");
-			}
-
-			ValidateUser_result user_result = null;
-			User user = null;
-
-			try {
-				user = new User();
-				Database.initialize();
-				database.startTransaction();
-				user = database.getUserdao().getUser(param.getUsername(), param.getPassword(), database);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			user = database.getUserdao().getUser(param.getUsername(), param.getPassword(), database);
 			
-			if(user != null) {
-				isvaliduser = true;
-				user_result = new ValidateUser_result(user.getFirstname(), user.getLastname(), user.getNum_indexed_records());
+			boolean valid_user = super.database.getValidateuserdao().validateUser(
+					param.getUsername(), param.getPassword(), super.database);
+
+			if (valid_user) {
+				System.out.println("here");
+				result.setUser(user);
+				
+				super.sendOK(result, exchange);
+				
 			} else {
-				user_result = new ValidateUser_result();
+				super.sendError(result, exchange);
 			}
-			
-			try {
-				exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			xmlstream.toXML(user_result, exchange.getResponseBody());
-			
-			try {
-				exchange.getResponseBody().close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
-			
-			database.endTransaction(false);
-			
+
 		} catch (Exception e) {
-			e.printStackTrace();
+			super.sendError(result, exchange);
 		}
-	} 
+	}
 }

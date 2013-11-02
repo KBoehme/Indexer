@@ -24,6 +24,14 @@
       <email>sheila.parker@gmail.com</email>
       <indexedrecords>0</indexedrecords>
     </user>
+    <user>      
+      <username>q</username>
+      <password>w</password>
+      <firstname>Kevin</firstname>
+      <lastname>Boehme</lastname>
+      <email>kboehme@gmail.com</email>
+      <indexedrecords>0</indexedrecords>
+      </user>
   </users>
   <projects>
     <project>

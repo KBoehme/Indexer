@@ -18,10 +18,13 @@ import server.database.Database;
 import shared.model.Field;
 import shared.model.Image;
 import shared.model.Project;
+import shared.model.Record;
 import shared.model.User;
+import shared.model.Value;
 
 /**
- * Class which parses a given XML document and uses the information to populate the databasae
+ * Class which parses a given XML document and uses the information to populate
+ * the databasae
  * 
  * @author Kevin
  * 
@@ -41,8 +44,8 @@ public class XMLParser {
 	}
 
 	/**
-	 * If passed the xml file location this will automatically parse through the entire xml and fill
-	 * the database.
+	 * If passed the xml file location this will automatically parse through the
+	 * entire xml and fill the database.
 	 * 
 	 * @param xmllocation
 	 */
@@ -51,8 +54,7 @@ public class XMLParser {
 		xml = new File(xmllocation);
 		// get the parent folder and its absolute path... Set it as root.
 		root = xml.getParentFile().getAbsolutePath();
-		System.out.println(root);
-		//Lets try to copy over the directory to our file place.
+		// Lets try to copy over the directory to our file place.
 		File source = new File(root);
 		File target = new File("./ImportedData");
 		try {
@@ -61,7 +63,8 @@ public class XMLParser {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
+		root = "ImportedData/";
 		/*
 		 * Need to parse the XML document and populate the database with the information. Create new
 		 * users and new projects...
@@ -92,19 +95,24 @@ public class XMLParser {
 	 * @param doc
 	 */
 	public void parseUsers(Document doc) {
-		//System.out.println("parse USERS");
 
 		NodeList userlist = doc.getElementsByTagName("user");
 		for (int i = 0; i < userlist.getLength(); ++i) {
 
 			Element userElem = (Element) userlist.item(i);
 
-			Element usernameElem = (Element) userElem.getElementsByTagName("username").item(0);
-			Element passwordElem = (Element) userElem.getElementsByTagName("password").item(0);
-			Element firstnameElem = (Element) userElem.getElementsByTagName("firstname").item(0);
-			Element lastnameElem = (Element) userElem.getElementsByTagName("lastname").item(0);
-			Element emailElem = (Element) userElem.getElementsByTagName("email").item(0);
-			Element indexedrecordsElem = (Element) userElem.getElementsByTagName("indexedrecords").item(0);
+			Element usernameElem = (Element) userElem.getElementsByTagName(
+					"username").item(0);
+			Element passwordElem = (Element) userElem.getElementsByTagName(
+					"password").item(0);
+			Element firstnameElem = (Element) userElem.getElementsByTagName(
+					"firstname").item(0);
+			Element lastnameElem = (Element) userElem.getElementsByTagName(
+					"lastname").item(0);
+			Element emailElem = (Element) userElem
+					.getElementsByTagName("email").item(0);
+			Element indexedrecordsElem = (Element) userElem
+					.getElementsByTagName("indexedrecords").item(0);
 
 			String username = null;
 			String password = null;
@@ -124,9 +132,11 @@ public class XMLParser {
 			if (emailElem != null)
 				email = emailElem.getTextContent();
 			if (indexedrecordsElem != null)
-				indexedrecords = Integer.valueOf(indexedrecordsElem.getTextContent());
+				indexedrecords = Integer.valueOf(indexedrecordsElem
+						.getTextContent());
 
-			User user = new User(username, password, firstname, lastname, email, indexedrecords, -1);
+			User user = new User(username, password, firstname, lastname,
+					email, indexedrecords, -1);
 			// ok we have a new user... now what? UserDAO!!!!
 			try {
 				database.getUserdao().insert(user, database);
@@ -138,7 +148,8 @@ public class XMLParser {
 	}
 
 	/**
-	 * This function parses the projects and then calls the parseFields and parseImages functions.
+	 * This function parses the projects and then calls the parseFields and
+	 * parseImages functions.
 	 * 
 	 * @param doc
 	 */
@@ -149,13 +160,17 @@ public class XMLParser {
 
 			Element projectElem = (Element) projectlist.item(i);
 
-			Element titleElem = (Element) projectElem.getElementsByTagName("title").item(0);
-			Element recordsperimageElem = (Element) projectElem.getElementsByTagName("recordsperimage").item(0);
-			Element firstycoordElem = (Element) projectElem.getElementsByTagName("firstycoord").item(0);
-			Element recordheightElem = (Element) projectElem.getElementsByTagName("recordheight").item(0);
+			Element titleElem = (Element) projectElem.getElementsByTagName(
+					"title").item(0);
+			Element recordsperimageElem = (Element) projectElem
+					.getElementsByTagName("recordsperimage").item(0);
+			Element firstycoordElem = (Element) projectElem
+					.getElementsByTagName("firstycoord").item(0);
+			Element recordheightElem = (Element) projectElem
+					.getElementsByTagName("recordheight").item(0);
 
 			// fields we need to parse...........
-			parseFields(projectElem, i);
+			int numfields = parseFields(projectElem, i);
 			// images we need to parse...........
 			parseImages(projectElem, i);
 
@@ -167,18 +182,16 @@ public class XMLParser {
 			if (titleElem != null)
 				title = titleElem.getTextContent();
 			if (recordsperimageElem != null)
-				recordsperimage = Integer.valueOf(recordsperimageElem.getTextContent());
+				recordsperimage = Integer.valueOf(recordsperimageElem
+						.getTextContent());
 			if (firstycoordElem != null)
 				firstycoord = Integer.valueOf(firstycoordElem.getTextContent());
 			if (recordheightElem != null)
-				recordheight = Integer.valueOf(recordheightElem.getTextContent());
+				recordheight = Integer.valueOf(recordheightElem
+						.getTextContent());
 
-			// OK we have each of the projects at this point... Lets add them to
-			// the database.
-			// System.out.println(title + ", " + recordsperimage + ", "
-			// + firstycoord + ", " + recordheight);
-
-			Project project = new Project(-1, title, recordsperimage, firstycoord, recordheight);
+			Project project = new Project(-1, title, recordsperimage,
+					numfields, firstycoord, recordheight);
 			try {
 				database.getProjectdao().insert(project, database);
 			} catch (SQLException e) {
@@ -194,24 +207,28 @@ public class XMLParser {
 	 * 
 	 * @param projectElem
 	 */
-	public void parseFields(Element projectElem, int projectid) {
-		//System.out.println("parse FIELDS");
+	public int parseFields(Element projectElem, int projectid) {
 		NodeList fieldlist = projectElem.getElementsByTagName("field");
 		for (int i = 0; i < fieldlist.getLength(); ++i) {
 			Element fieldElem = (Element) fieldlist.item(i);
 
-			Element titleElem = (Element) fieldElem.getElementsByTagName("title").item(0);
-			Element xcoordElem = (Element) fieldElem.getElementsByTagName("xcoord").item(0);
-			Element widthElem = (Element) fieldElem.getElementsByTagName("width").item(0);
-			Element helphtmlElem = (Element) fieldElem.getElementsByTagName("helphtml").item(0);
-			Element knowndataElem = (Element) fieldElem.getElementsByTagName("knowndata").item(0);
-			
+			Element titleElem = (Element) fieldElem.getElementsByTagName(
+					"title").item(0);
+			Element xcoordElem = (Element) fieldElem.getElementsByTagName(
+					"xcoord").item(0);
+			Element widthElem = (Element) fieldElem.getElementsByTagName(
+					"width").item(0);
+			Element helphtmlElem = (Element) fieldElem.getElementsByTagName(
+					"helphtml").item(0);
+			Element knowndataElem = (Element) fieldElem.getElementsByTagName(
+					"knowndata").item(0);
+
 			String title = null;
 			int xcoord = -1;
 			int width = -1;
 			String helphtml = null;
 			String knowndata = null;
-			
+
 			if (titleElem != null)
 				title = titleElem.getTextContent();
 			if (xcoordElem != null)
@@ -223,10 +240,8 @@ public class XMLParser {
 			if (knowndataElem != null)
 				knowndata = knowndataElem.getTextContent();
 
-			// System.out.println(title + ", " + xcoord + ", " + width + ", "
-			// + helphtml + ", " + knowndata);
-
-			Field field = new Field(-1, title, xcoord, width, helphtml, knowndata, i + 1,  projectid + 1);
+			Field field = new Field(-1, title, xcoord, width, helphtml,
+					knowndata, i + 1, projectid + 1);
 			try {
 				database.getFielddao().insert(field, database);
 			} catch (SQLException e) {
@@ -235,6 +250,8 @@ public class XMLParser {
 			}
 
 		}
+
+		return fieldlist.getLength();
 	}
 
 	/**
@@ -244,26 +261,97 @@ public class XMLParser {
 	 * @throws
 	 */
 	public void parseImages(Element projectElem, int projectid) {
-		//System.out.println("parse Images");
 
 		NodeList imagelist = projectElem.getElementsByTagName("image");
+
 		for (int i = 0; i < imagelist.getLength(); ++i) {
 			Element imageElem = (Element) imagelist.item(i);
 
-			Element fileElem = (Element) imageElem.getElementsByTagName("file").item(0);
+			Element fileElem = (Element) imageElem.getElementsByTagName("file")
+					.item(0);
+			Element recordsElem = (Element) imageElem.getElementsByTagName(
+					"records").item(0);
 
 			String file = null;
 			if (fileElem != null)
+				//file = fileElem.getTextContent();
 				file = root + fileElem.getTextContent();
-			
-			// System.out.println(file);
-			Image image = new Image(-1, file, projectid + 1);
+
+			boolean hasbeenindexed = false;
+			if(recordsElem != null) {
+				hasbeenindexed = true;
+			}
+			Image image = new Image(-1, file, projectid + 1, hasbeenindexed);
+			int imageid = 0;
 			try {
-				database.getImagedao().insert(image, database);
+				imageid = database.getImagedao().insert(image, database);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
+			if (recordsElem != null) {
+				parseRecords(imageElem, imageid);
+			}
+
+		}
+	}
+
+	public void parseRecords(Element imageElem, int imageid) {
+
+		NodeList records = imageElem.getElementsByTagName("records");
+		Element recordsElem = (Element) records.item(0);
+
+		NodeList recordlist = recordsElem.getElementsByTagName("record");
+
+		for (int i = 0; i < recordlist.getLength(); ++i) { // number of rows. +1
+			Element recordElem = (Element) recordlist.item(i);
+
+			Element valuesElem = (Element) recordElem.getElementsByTagName(
+					"values").item(0);
+
+			int rownumber = i + 1;
+			boolean hasvalues = true;
+			Record record = new Record(-1, rownumber, imageid, hasvalues);
+
+			int recordid = 0;
+
+			try {
+				recordid = database.getRecorddao().insert(record, database);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (valuesElem != null) {
+				parseValues(valuesElem, rownumber, recordid, imageid);
+			}
+		}
+	}
+
+	public void parseValues(Element valuesElem, int rownum, int imageid,
+			int recordid) {
+
+		NodeList valuelist = valuesElem.getElementsByTagName("value");
+
+		for (int i = 0; i < valuelist.getLength(); ++i) {
+
+			Element valueElem = (Element) valuelist.item(i);
+
+			String value_string = valueElem.getTextContent();
+
+			int fieldnum = i + 1;
+
+			Value value = new Value(-1, value_string, fieldnum, rownum,
+					imageid, recordid);
+
+			try {
+				database.getValuedao().insert(value, database);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
 	}
 }

@@ -52,9 +52,13 @@ public class ValueDAO {
 				// Extract all the information from the value we pulled.
 				int id = results.getInt(1);
 				String valuestring = results.getString(2);
-				int recordID = results.getInt(3);
+				int fieldnum = results.getInt(3);
+				int rownum = results.getInt(4);
+				int imageID = results.getInt(5);
+				int recordID = results.getInt(6);
 				
-				Value value = new Value(id, valuestring, recordID);
+				
+				Value value = new Value(id, valuestring, rownum, fieldnum, imageID, recordID);
 				allvalues.add(value);
 			}
 		} catch (SQLException e) {
@@ -78,36 +82,28 @@ public class ValueDAO {
 
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
-		Statement stmt = null;
 		ResultSet results = null;
 
+		
 		try {
-			String sql = "INSERT INTO values (value, recordID) VALUES (?,?)";
+			String sql = "INSERT INTO value (value, fieldnum, rownum, imageID, recordID) VALUES (?,?,?,?,?)";
 			pstmt = con.prepareStatement(sql);
 
 			pstmt.setString(1, value.getValue());
-			pstmt.setInt(2, value.getRecordID());
+			pstmt.setInt(2, value.getFieldnum());
+			pstmt.setInt(3, value.getRownum());
+			pstmt.setInt(4, value.getImageID());
+			pstmt.setInt(5, value.getRecordID());
 
-			if (pstmt.executeUpdate() == 1) {
-				System.out.println("Success: value inserted into database.");
-				stmt = con.createStatement();
-				// results = stmt.executeQuery("SELECT last_insert.rowid()");
-				// results.next();
-				// int uid = results.getInt(1); // ID of the new value
-				// value.setID(uid);
-			} else {
-				System.out.println("Failed: Unable to insert value into database.");
-			}
+			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			if (pstmt != null)
-				stmt.close();
+				pstmt.close();
 			if (results != null)
 				results.close();
-			if (stmt != null)
-				stmt.close();
 		}
 	}
 

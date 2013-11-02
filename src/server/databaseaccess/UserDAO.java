@@ -10,8 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import client.communicator.ValidateUser_result;
 import server.database.Database;
+import shared.communication.ValidateUser_result;
 import shared.model.User;
 
 /**
@@ -86,6 +86,7 @@ public class UserDAO {
 
 		try {
 			String sql = "SELECT * FROM Users WHERE username = ?";
+			System.out.println(database);
 			pstmt = database.getConnection().prepareStatement(sql);
 
 			pstmt.setString(1, get_username);
@@ -186,14 +187,15 @@ public class UserDAO {
 		ResultSet results = null;
 
 		try {
-			String addsql = "UPDATE Users SET current_batch_id = ? WHERE ID = ?";
+			String addsql = "UPDATE Users SET num_indexed_records = ? , current_batch_id = ? WHERE ID = ?";
 			pstmt = con.prepareStatement(addsql);
 
 			System.out.println(user.getCurr_batch_id());
 			System.out.println(user.getID());
-
-			pstmt.setInt(1, user.getCurr_batch_id());
-			pstmt.setInt(2, user.getID());
+			
+			pstmt.setInt(1, user.getNum_indexed_records());
+			pstmt.setInt(2, user.getCurr_batch_id());
+			pstmt.setInt(3, user.getID());
 
 
 			if (pstmt.executeUpdate() == 1) {

@@ -15,7 +15,7 @@ import shared.model.Record;
 
 /**
  * @author Kevin
- *
+ * 
  */
 public class RecordDAO {
 
@@ -26,17 +26,16 @@ public class RecordDAO {
 		// TODO Auto-generated constructor stub
 	}
 
-
-
 	/**
 	 * This function will return all of the current records.
+	 * 
 	 * @return ArrayList<record> allrecords
 	 * @throws SQLException
 	 */
 	public ArrayList<Record> getAll(Database database) throws SQLException {
-		
+
 		ArrayList<Record> allrecords = new ArrayList<Record>();
-		
+
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		Statement stmt = null;
@@ -48,16 +47,16 @@ public class RecordDAO {
 			results = stmt.executeQuery(sql);
 			while (results.next()) {
 				// Extract all the information from the record we pulled.
-//				int id = results.getInt(1);
-//				String recordname = results.getString(2);
-//				String password = results.getString(3);
-//				String firstname = results.getString(4);
-//				String lastname = results.getString(5);
-//				String email = results.getString(6);
-//				int num_indexed_records = results.getInt(7);
-//				int current_batch_id = results.getInt(8);
-//				Record record = new Record(-1, );
-//				allrecords.add(record);
+				// int id = results.getInt(1);
+				// String recordname = results.getString(2);
+				// String password = results.getString(3);
+				// String firstname = results.getString(4);
+				// String lastname = results.getString(5);
+				// String email = results.getString(6);
+				// int num_indexed_records = results.getInt(7);
+				// int current_batch_id = results.getInt(8);
+				// Record record = new Record(-1, );
+				// allrecords.add(record);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -70,37 +69,39 @@ public class RecordDAO {
 		}
 		return allrecords;
 	}
-	
+
 	/**
 	 * Insert record into the database.
+	 * 
 	 * @throws SQLException
+	 * @return int (the record id number)
 	 */
-	public void insert(Record record, Database database) throws SQLException {
+	public int insert(Record record, Database database) throws SQLException {
 
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		Statement stmt = null;
 		ResultSet results = null;
 
+		int uid = 0;
+
 		try {
-			String sql = "INSERT INTO records (rownumber, projectID, imageID, hasvalues) VALUES (?,?,?,?)";
+			String sql = "INSERT INTO records (rownumber, imageID, hasvalues) VALUES (?,?,?)";
 			pstmt = con.prepareStatement(sql);
 
 			pstmt.setInt(1, record.getRownumber());
-			pstmt.setInt(2, record.getProjectID());
-			pstmt.setInt(3, record.getImageID());
-			pstmt.setBoolean(4, record.isHasvalues());
+			pstmt.setInt(2, record.getImageID());
+			pstmt.setBoolean(3, record.isHasvalues());
 
-
+			// System.out.println(pstmt.toString());
 			if (pstmt.executeUpdate() == 1) {
-				//System.out.println("Success: record inserted into database.");
 				stmt = con.createStatement();
-				// results = stmt.executeQuery("SELECT last_insert.rowid()");
-				// results.next();
-				// int uid = results.getInt(1); // ID of the new record
-				// record.setID(uid);
+				results = stmt.executeQuery("SELECT last_insert_rowid()");
+				results.next();
+				uid = results.getInt(1); // ID of the new record
 			} else {
 				System.out.println("Failed: Unable to insert record into database.");
+
 			}
 
 		} catch (SQLException e) {
@@ -113,48 +114,53 @@ public class RecordDAO {
 			if (stmt != null)
 				stmt.close();
 		}
+
+		return uid;
 	}
 
 	/**
 	 * Update record in the database.
+	 * 
 	 * @param record
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public void update(Record record, Database database) throws SQLException {
-		
+
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		Statement stmt = null;
 		ResultSet results = null;
-		
+
 		try {
 			String addsql = "UPDATE records SET (rownumber, projectID, imageID, hasvalues) VALUES (?,?,?,?)";
 			pstmt = con.prepareStatement(addsql);
 
 			pstmt.setInt(1, record.getRownumber());
-			pstmt.setInt(2, record.getProjectID());
 			pstmt.setInt(3, record.getImageID());
 			pstmt.setBoolean(4, record.isHasvalues());
 
-			if(pstmt.executeUpdate() == 1) {
-				System.out.println("Success: record updated.");
+			if (pstmt.executeUpdate() == 1) {
 			} else {
-				//ERROR :Q
+				// ERROR :Q
 				System.out.println("Failed: Unable to update record.");
 			}
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (pstmt != null) stmt.close();
-			if (results != null) results.close();
-			if (stmt != null) stmt.close();
+			if (pstmt != null)
+				stmt.close();
+			if (results != null)
+				results.close();
+			if (stmt != null)
+				stmt.close();
 		}
 	}
-	
+
 	/**
 	 * Query the database.
+	 * 
 	 * @param record
 	 */
 	public void query(Record record, Database database) {
@@ -162,15 +168,14 @@ public class RecordDAO {
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet results = null;
-		
+
 		try {
 			String sql = "SELECT FROM records WHERE (rownumber, projectID, imageID) VALUES (?,?,?)";
 			pstmt = con.prepareStatement(sql);
-			
+
 			pstmt.setInt(1, record.getRownumber());
-			pstmt.setInt(2, record.getProjectID());
 			pstmt.setInt(3, record.getImageID());
-			
+
 			pstmt.executeQuery(sql);
 
 		} catch (SQLException e) {
@@ -181,27 +186,27 @@ public class RecordDAO {
 
 	/**
 	 * Delete record from the database.
-	 * @throws SQLException 
+	 * 
+	 * @throws SQLException
 	 * 
 	 */
 	public void delete(Record record, Database database) throws SQLException {
-		
+
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet results = null;
-		
+
 		try {
 			String sql = "DELETE FROM record WHERE (rownumber, projectID, imageID) VALUES (?,?,?)";
 			pstmt = con.prepareStatement(sql);
 
 			pstmt.setInt(1, record.getRownumber());
-			pstmt.setInt(2, record.getProjectID());
 			pstmt.setInt(3, record.getImageID());
-			
+
 			if (pstmt.executeUpdate(sql) == 1) {
-				System.out.println("Success: record deleted from database.");
 			} else {
-				System.out.println("Failed: Unable to delete record from database.");
+				System.out
+						.println("Failed: Unable to delete record from database.");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

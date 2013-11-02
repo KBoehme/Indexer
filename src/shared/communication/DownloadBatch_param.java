@@ -1,23 +1,22 @@
 /**
  * 
  */
-package client.communicator;
+package shared.communication;
 
 /**
  * @author Kevin
- *
+ * 
  */
-public class GetFields_param {
+public class DownloadBatch_param {
 
 	private String username;
 	private String password;
 	private int projectid;
-	boolean projectisempty;
-	
+
 	/**
 	 * 
 	 */
-	public GetFields_param() {
+	public DownloadBatch_param() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -26,17 +25,10 @@ public class GetFields_param {
 	 * @param password
 	 * @param projectid
 	 */
-	public GetFields_param(String username, String password, int projectid) {
+	public DownloadBatch_param(String username, String password, int projectid) {
 		this.username = username;
 		this.password = password;
 		this.projectid = projectid;
-		this.projectisempty = false;
-	}
-	
-	public GetFields_param(String username, String password, String projectid_isempty) {
-		this.username = username;
-		this.password = password;
-		this.projectisempty = true;
 	}
 
 	/**
@@ -47,7 +39,8 @@ public class GetFields_param {
 	}
 
 	/**
-	 * @param username the username to set
+	 * @param username
+	 *            the username to set
 	 */
 	public void setUsername(String username) {
 		this.username = username;
@@ -61,7 +54,8 @@ public class GetFields_param {
 	}
 
 	/**
-	 * @param password the password to set
+	 * @param password
+	 *            the password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
@@ -75,13 +69,10 @@ public class GetFields_param {
 	}
 
 	/**
-	 * @param projectid the projectid to set
+	 * @param projectid
+	 *            the projectid to set
 	 */
 	public void setProjectid(int projectid) {
 		this.projectid = projectid;
-	}
-	
-	public boolean projectIsEmpty() {
-		return projectisempty;
 	}
 }

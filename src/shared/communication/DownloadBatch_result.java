@@ -1,7 +1,7 @@
 /**
  * 
  */
-package client.communicator;
+package shared.communication;
 
 import java.util.ArrayList;
 

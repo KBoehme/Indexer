@@ -52,10 +52,11 @@ public class ProjectDAO {
 				int id = results.getInt(1);
 				String title = results.getString(2);
 				int recordsperimage = results.getInt(3);
-				int firstycoord = results.getInt(4);
-				int recordheight = results.getInt(5);
+				int numfields = results.getInt(4);
+				int firstycoord = results.getInt(5);
+				int recordheight = results.getInt(6);
 				
-				Project project = new Project(id,title, recordsperimage, firstycoord, recordheight);
+				Project project = new Project(id,title, recordsperimage, numfields, firstycoord, recordheight);
 				allprojects.add(project);
 			}
 		} catch (SQLException e) {
@@ -72,7 +73,8 @@ public class ProjectDAO {
 
 	public Project getProject(int projectid, Database database) throws SQLException {
 		Project project = new Project();
-		
+		System.out.println("WITHIN PROJECTS");
+
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet results = null;
@@ -91,10 +93,11 @@ public class ProjectDAO {
 				int id = results.getInt(1);
 				String title = results.getString(2);
 				int recordsperimage = results.getInt(3);
-				int firstycoord = results.getInt(4);
-				int recordheight = results.getInt(5);
+				int numfields = results.getInt(4);
+				int firstycoord = results.getInt(5);
+				int recordheight = results.getInt(6);
 				
-				project = new Project(id,title, recordsperimage, firstycoord, recordheight);
+				project = new Project(id, title, recordsperimage, numfields, firstycoord, recordheight);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -126,13 +129,14 @@ public class ProjectDAO {
 		Statement stmt = null;
 		ResultSet results = null;
 		try {
-			String addsql = "INSERT INTO projects (title, recordsperimage, firstycoord, recordheight) VALUES (?,?,?,?)";
+			String addsql = "INSERT INTO projects (title, recordsperimage, numfields, firstycoord, recordheight) VALUES (?,?,?,?,?)";
 			pstmt = con.prepareStatement(addsql);
 
 			pstmt.setString(1, project.getTitle());
 			pstmt.setInt(2, project.getRecordsperimage());
-			pstmt.setInt(3, project.getFirstycoord());
-			pstmt.setInt(4, project.getRecordheight());
+			pstmt.setInt(3, project.getNumfields());
+			pstmt.setInt(4, project.getFirstycoord());
+			pstmt.setInt(5, project.getRecordheight());
 			
 			if(pstmt.executeUpdate() == 1) {
 				stmt = con.createStatement();

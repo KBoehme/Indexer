@@ -12,6 +12,7 @@ public class Project {
 	private int ID;
 	private String title;
 	private int recordsperimage;
+	private int numfields;
 	private int firstycoord;
 	private int recordheight;
 
@@ -23,6 +24,7 @@ public class Project {
 		setID(-1);
 		setTitle(null);
 		setRecordsperimage(-1);
+		setNumfields(-1);
 		setFirstycoord(-1);
 		setRecordheight(-1);
 	}
@@ -37,11 +39,12 @@ public class Project {
 	 * @param fieldgroupID
 	 * @param imagegroupdID
 	 */
-	public Project(int iD, String title, int recordsperimage, int firstycoord,
+	public Project(int iD, String title, int recordsperimage, int numfields, int firstycoord,
 			int recordheight) {
 		ID = iD;
 		this.title = title;
 		this.recordsperimage = recordsperimage;
+		setNumfields(numfields);
 		this.firstycoord = firstycoord;
 		this.recordheight = recordheight;
 	}
@@ -92,6 +95,22 @@ public class Project {
 	 */
 	public void setRecordsperimage(int recordsperimage) {
 		this.recordsperimage = recordsperimage;
+	}
+
+
+	/**
+	 * @return the numfields
+	 */
+	public int getNumfields() {
+		return numfields;
+	}
+
+
+	/**
+	 * @param numfields the numfields to set
+	 */
+	public void setNumfields(int numfields) {
+		this.numfields = numfields;
 	}
 
 

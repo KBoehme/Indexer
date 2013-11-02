@@ -53,9 +53,10 @@ public class ImageDAO {
 				// Extract all the information from the image we pulled.
 				int id = results.getInt(1);
 				String url = results.getString(2);
-				int projectid = results.getInt(3);
-
-				Image image = new Image(id, url, projectid);
+				int projectid = results.getInt(4);
+				boolean hasbeenindexed = results.getBoolean(3);
+				
+				Image image = new Image(id, url, projectid, hasbeenindexed);
 				allimages.add(image);
 			}
 		} catch (SQLException e) {
@@ -70,30 +71,107 @@ public class ImageDAO {
 		return allimages;
 	}
 
-	public Image getImage(int projectid, Database database) throws SQLException {
+	public Image getImage(int projectid, Database database, boolean dlimage)
+			throws SQLException {
 
+		if (dlimage) {
+
+			PreparedStatement pstmt = null;
+			ResultSet results = null;
+			Image image = null;
+
+			try {
+				String sql = "SELECT * FROM Images where projectID = ? AND hasbeenindexed = ?";
+				pstmt = database.getConnection().prepareStatement(sql);
+
+				pstmt.setInt(1, projectid);
+				pstmt.setBoolean(2, false);
+
+				results = pstmt.executeQuery();
+
+				while (results.next()) {
+					int id = results.getInt(1);
+					String fileurl = results.getString(2);
+					boolean hasbeenindexed = results.getBoolean(3);
+					
+					image = new Image(id, fileurl, projectid, hasbeenindexed);
+					if (dlimage) {
+						image.setHasbeenindexed(true);
+						this.update(image, database);
+						break;
+					}
+					break;
+				}
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				if (results != null)
+					results.close();
+				if (pstmt != null)
+					pstmt.close();
+			}
+			return image;
+		} else {
+			PreparedStatement pstmt = null;
+			ResultSet results = null;
+			Image image = null;
+
+			try {
+				String sql = "SELECT * FROM Images where projectID = ?";
+				pstmt = database.getConnection().prepareStatement(sql);
+
+				pstmt.setInt(1, projectid);
+
+				results = pstmt.executeQuery();
+
+				while (results.next()) {
+					// Extract all the information from the User we pulled.
+					int id = results.getInt(1);
+					String fileurl = results.getString(2);
+					boolean hasbeenindexed = results.getBoolean(3);
+					
+					image = new Image(id, fileurl, projectid, hasbeenindexed);
+					break;
+				}
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				if (results != null)
+					results.close();
+				if (pstmt != null)
+					pstmt.close();
+			}
+			return image;
+		}
+
+	}
+
+	public Image getImage(int imageid, Database database) throws SQLException {
 		PreparedStatement pstmt = null;
 		ResultSet results = null;
 		Image image = null;
 
 		try {
-			String sql = "SELECT * FROM Images WHERE projectid = ?";
+			String sql = "SELECT * FROM Images where ID = ?";
 			pstmt = database.getConnection().prepareStatement(sql);
 
-			pstmt.setInt(1, projectid);
+			pstmt.setInt(1, imageid);
 
 			results = pstmt.executeQuery();
 
-			results.next();
-			// Extract all the information from the User we pulled.
-			int id = results.getInt(1);
-			String fileurl = results.getString(2);
-			int project_id = results.getInt(3);
-			
-			image = new Image(id, fileurl, project_id);
-			image.setHasbeenindexed(true);
-
-			this.update(image, database);
+			while (results.next()) {
+				// Extract all the information from the User we pulled.
+				int id = results.getInt(1);
+				String fileurl = results.getString(2);
+				boolean hasbeenindexed = results.getBoolean(3);
+				int projectid = results.getInt(4);
+				
+				image = new Image(id, fileurl, projectid, hasbeenindexed);
+			}
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -113,24 +191,25 @@ public class ImageDAO {
 	 * @throws SQLException
 	 * 
 	 */
-	public void insert(Image image, Database database) throws SQLException {
+	public int insert(Image image, Database database) throws SQLException {
+		int uid = 0;
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		Statement stmt = null;
 		ResultSet results = null;
 		try {
-			String addsql = "INSERT INTO Images (file, projectID) VALUES (?,?)";
+			String addsql = "INSERT INTO Images (file, projectID, hasbeenindexed) VALUES (?,?,?)";
 			pstmt = con.prepareStatement(addsql);
 
 			pstmt.setString(1, String.valueOf(image.getFileurl()));
 			pstmt.setInt(2, image.getProjectID());
+			pstmt.setBoolean(3, image.isHasbeenindexed());
 
 			if (pstmt.executeUpdate() == 1) {
 				stmt = con.createStatement();
-				// results = stmt.executeQuery("SELECT last_insert.rowid()");
-				// results.next();
-				// int uid = results.getInt(1); // ID of the new user
-				// project.setID(uid);
+				results = stmt.executeQuery("SELECT last_insert_rowid()");
+				results.next();
+				uid = results.getInt(1); // ID of the new user
 			} else {
 				// ERROR :Q
 			}
@@ -146,6 +225,8 @@ public class ImageDAO {
 			if (stmt != null)
 				stmt.close();
 		}
+		
+		return uid;
 	}
 
 	/**
@@ -161,9 +242,9 @@ public class ImageDAO {
 
 		try {
 			String addsql = "UPDATE images SET ID = ?, file = ?, hasbeenindexed = ?, projectID = ? WHERE ID = ?";
-			
-			//System.out.println("image file: " + image.getFileurl());
-			//System.out.println("bool : " + image.isHasbeenindexed());
+
+			// System.out.println("image file: " + image.getFileurl());
+			// System.out.println("bool : " + image.isHasbeenindexed());
 			pstmt = con.prepareStatement(addsql);
 			pstmt.setInt(1, image.getID());
 			pstmt.setString(2, image.getFileurl());
@@ -171,12 +252,11 @@ public class ImageDAO {
 			pstmt.setInt(4, image.getProjectID());
 			pstmt.setInt(5, image.getID());
 
-
 			if (pstmt.executeUpdate() == 1) {
-				//System.out.println("Success: image updated.");
+				// System.out.println("Success: image updated.");
 			} else {
 				// ERROR :Q
-				//System.out.println("Failed: Unable to update image.");
+				// System.out.println("Failed: Unable to update image.");
 			}
 
 		} catch (SQLException e) {

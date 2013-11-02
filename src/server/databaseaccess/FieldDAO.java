@@ -19,13 +19,11 @@ import shared.model.Field;
  */
 public class FieldDAO {
 
-	Database database;
 	/**
 	 * 
 	 */
 	public FieldDAO() {
 		// TODO Auto-generated constructor stub
-		this.database = database;
 	}
 	
 	/**
@@ -260,5 +258,4 @@ public class FieldDAO {
 		}
 		return allfields;
 	}
-
 }

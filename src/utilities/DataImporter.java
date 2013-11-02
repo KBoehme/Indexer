@@ -9,8 +9,8 @@ import java.util.Scanner;
 import server.database.Database;
 
 /**
- * This class reads in the Records file and copies all data over to secure location. It also calls
- * the parseXML class.
+ * This class reads in the Records file and copies all data over to secure
+ * location. It also calls the parseXML class.
  * 
  * @author Kevin
  * 
@@ -29,7 +29,7 @@ public class DataImporter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		XMLParser xmlparser = new XMLParser(pathtoxml, database);
 	}
 
@@ -55,7 +55,6 @@ public class DataImporter {
 			try {
 				stmt = database.getConnection().createStatement();
 				stmt.executeUpdate(SQLcreatetable);
-				System.out.println(SQLcreatetable);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

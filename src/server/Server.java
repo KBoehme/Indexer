@@ -59,7 +59,7 @@ public class Server {
 		server.createContext("/SubmitBatch", submitBatchHandler);
 		server.createContext("/GetFields", getFieldsHandler);
 		server.createContext("/Search", searchhandler);
-		server.createContext("/download", downloadFileHandler);
+		server.createContext("/Download", downloadFileHandler);
 
 		server.start();
 	}

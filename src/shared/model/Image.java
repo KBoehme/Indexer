@@ -37,10 +37,11 @@ public class Image {
 	 * @param file
 	 * @param projectID
 	 */
-	public Image(int iD, String fileurl, int projectID) {
+	public Image(int iD, String fileurl, int projectID, boolean hasbeenindexed) {
 		this.ID = iD;
 		this.fileurl = fileurl;
 		this.projectID = projectID;
+		this.hasbeenindexed = hasbeenindexed;
 	}
 
 	/**
