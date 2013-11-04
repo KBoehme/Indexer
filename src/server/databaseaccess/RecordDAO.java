@@ -69,6 +69,35 @@ public class RecordDAO {
 		}
 		return allrecords;
 	}
+	
+	public int getRecordRowNumber(int recordid, Database database) throws SQLException {
+
+		int row_number = -1;
+
+		PreparedStatement pstmt = null;
+		ResultSet results = null;
+
+		try {
+			String sql = "SELECT * FROM records WHERE ID = ?";
+			pstmt = database.getConnection().prepareStatement(sql);
+			
+			pstmt.setInt(1, recordid);
+			
+			results = pstmt.executeQuery();
+			while (results.next()) {
+				row_number = results.getInt(2);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (results != null)
+				results.close();
+			if (pstmt != null)
+				pstmt.close();
+		}
+		return row_number;
+	}
 
 	/**
 	 * Insert record into the database.

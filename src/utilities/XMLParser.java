@@ -274,7 +274,6 @@ public class XMLParser {
 
 			String file = null;
 			if (fileElem != null)
-				//file = fileElem.getTextContent();
 				file = root + fileElem.getTextContent();
 
 			boolean hasbeenindexed = false;
@@ -285,6 +284,8 @@ public class XMLParser {
 			int imageid = 0;
 			try {
 				imageid = database.getImagedao().insert(image, database);
+				//parseRecords(imageElem, i+1);
+
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -301,7 +302,7 @@ public class XMLParser {
 
 		NodeList records = imageElem.getElementsByTagName("records");
 		Element recordsElem = (Element) records.item(0);
-
+		
 		NodeList recordlist = recordsElem.getElementsByTagName("record");
 
 		for (int i = 0; i < recordlist.getLength(); ++i) { // number of rows. +1
@@ -324,7 +325,7 @@ public class XMLParser {
 			}
 
 			if (valuesElem != null) {
-				parseValues(valuesElem, rownumber, recordid, imageid);
+				parseValues(valuesElem, rownumber, imageid, recordid);
 			}
 		}
 	}

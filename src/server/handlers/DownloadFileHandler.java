@@ -45,7 +45,7 @@ public class DownloadFileHandler implements HttpHandler {
 
 			bstream.read(bytearray, 0, bytearray.length);
 
-			exchange.sendResponseHeaders(200, file.length());
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, file.length());
 
 			OutputStream ostream = exchange.getResponseBody();
 			ostream.write(bytearray, 0, bytearray.length);

@@ -149,6 +149,43 @@ public class ImageDAO {
 		}
 
 	}
+	
+	public ArrayList<Image> getSearchImages(int get_projectid, Database database) throws SQLException {
+		PreparedStatement pstmt = null;
+		ResultSet results = null;
+		ArrayList<Image> images = new ArrayList<Image>();
+
+		try {
+			String sql = "SELECT * FROM Images where projectid = ? AND hasbeenindexed = ?";
+			pstmt = database.getConnection().prepareStatement(sql);
+
+			pstmt.setInt(1, get_projectid);
+			pstmt.setBoolean(2, true);
+
+			results = pstmt.executeQuery();
+
+			while (results.next()) {
+				// Extract all the information from the User we pulled.
+				int id = results.getInt(1);
+				String fileurl = results.getString(2);
+				boolean hasbeenindexed = results.getBoolean(3);
+				int projectid = results.getInt(4);
+				
+				Image image = new Image(id, fileurl, projectid, hasbeenindexed);
+				images.add(image);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (results != null)
+				results.close();
+			if (pstmt != null)
+				pstmt.close();
+		}
+		return images;
+	}
 
 	public Image getImage(int imageid, Database database) throws SQLException {
 		PreparedStatement pstmt = null;

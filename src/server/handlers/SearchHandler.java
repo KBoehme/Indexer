@@ -33,7 +33,9 @@ public class SearchHandler extends BaseHandler implements HttpHandler {
 		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.sun.net.httpserver.HttpHandler#handle(com.sun.net.httpserver.HttpExchange)
 	 */
 	@Override
@@ -41,9 +43,9 @@ public class SearchHandler extends BaseHandler implements HttpHandler {
 
 		Search_result result = new Search_result();
 
-		//Ok we need to get a few tables to do some java logic and get what
-		//we need here.
-		
+		// Ok we need to get a few tables to do some java logic and get what
+		// we need here.
+
 		try {
 			super.startHandler();
 
@@ -52,65 +54,48 @@ public class SearchHandler extends BaseHandler implements HttpHandler {
 
 			boolean valid_user = database.getValidateuserdao().validateUser(param.getUsername(), param.getPassword(),
 					database);
-			
-			if (valid_user) { //we have a valid user..
+
+			if (valid_user) { // we have a valid user..
+
+				// new plan loop through all of the field ids first.
+
 				ArrayList<Integer> fieldids = param.getFields();
-				ArrayList<String> searchvalues = param.getSearch_values();
 
-				ArrayList<Field> fields = database.getFielddao().getAll(database);
-				ArrayList<Field> matched_fields = new ArrayList<Field>();
-				ArrayList<Integer> projectids = new ArrayList<Integer>();
-				
-				HashMap<String, String> map = new HashMap<String, String>();
-				//{"imageid,imagefile,rownum,fieldid" , value} map? with key-value
-				
-				//Match fields to IDs..
-				for(Field field : fields) {
-					for(int id : fieldids) {
-						if(field.getID() == id) { //we have a matching ID
-							matched_fields.add(field);
-							projectids.add(field.getProjectID());
+				for (int fieldid : fieldids) {
+					// ok for each field id we now need to get the fields that have those ids.
+					Field field = database.getFielddao().getField(fieldid, database);
+					int fieldnum = field.getField_number();
+					// ok we have the field and can get the projectid...
+					int projectid = field.getProjectID();
+					ArrayList<Image> images = database.getImagedao().getSearchImages(projectid, database);
+					// ok got the images that we need to check the values on..
+
+					for (Image image : images) { // loop through the images..
+						ArrayList<Value> values = database.getValuedao().getValues(image.getID(), field.getField_number(), database);
+						// ok we now have all the values that we need to search through..
+						for (String svalue : param.getSearch_values()) {
+							for (Value value : values) {
+								//System.out.println("search value: " + svalue + "  vs  " + value.getValue());
+								if (value.getValue().toLowerCase().equals(svalue.toLowerCase())) { // we have a matched search
+																		// value..
+									// {"imageid,imagefile,rownum,fieldid" , value} map? with
+									// key-value
+								//	System.out.println("BINGOOOOOOOOOOoo");
+									int row_number = database.getRecorddao().getRecordRowNumber(value.getRecordID(),
+											database);
+									result.addSearchTuple(image.getID(), image.getFileurl(), row_number, fieldid);
+
+								}
+
+							}
 						}
+
 					}
+
 				}
-				
-				//ok we got all the fields.
-				//lets get all the images now.
-				
-				ArrayList<Image> images = database.getImagedao().getAllImages(database);
-				ArrayList<Image> matched_images = new ArrayList<Image>();
 
-				ArrayList<Integer> imageids = new ArrayList<Integer>();
-				
-				for(int pid : projectids) {
-					for(Image image: images) {
-						if(image.getProjectID() == pid && image.isHasbeenindexed() == true) { //get this image.
-							matched_images.add(image);
-							imageids.add(image.getID());
-						}
-					}
-				}
-				
-				//Ok got all the images we'll need.
-				//lets get the values..
-				ArrayList<Value> values = database.getValuedao().getAll(database);
-				ArrayList<Value> matched_values = new ArrayList<Value>();
-				
-				ArrayList<String> string_values = new ArrayList<String>();
-
-				for(int iid : imageids) {
-					for(Value value : values) {
-						if(value.getImageID() == iid) { //we have a value match
-							matched_values.add(value);
-						}
-					}
-				}	
-				
-//				//uhhh now what...
-//				for(String value: string_values) {
-//					for()
-//				}
-				
+				//ok we seem to have gotten all the search fields found...
+				super.sendOK(result, exchange);
 			} else {
 				super.sendError(result, exchange);
 			}

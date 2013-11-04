@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import server.database.Database;
+import shared.model.Image;
 import shared.model.Value;
 
 /**
@@ -71,6 +72,45 @@ public class ValueDAO {
 				stmt.close();
 		}
 		return allvalues;
+	}
+	
+	public ArrayList<Value> getValues(int imageid, int rownum, Database database) throws SQLException {
+		PreparedStatement pstmt = null;
+		ResultSet results = null;
+		ArrayList<Value> values = new ArrayList<Value>();
+
+		try {
+			String sql = "SELECT * FROM Value where fieldnum = ? AND imageid = ?";
+			pstmt = database.getConnection().prepareStatement(sql);
+			
+			pstmt.setInt(1, rownum);
+			pstmt.setInt(2, imageid);
+
+			results = pstmt.executeQuery();
+
+			while (results.next()) {
+				// Extract all the information from the User we pulled.
+				int id = results.getInt(1);
+				String string_value = results.getString(2);
+				int fieldnum = results.getInt(3);
+				int rownumb = results.getInt(4);
+				int val_imageid = results.getInt(5);
+				int recordid = results.getInt(6);
+				
+				Value value = new Value(id, string_value, fieldnum, rownumb, val_imageid, recordid);
+				values.add(value);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (results != null)
+				results.close();
+			if (pstmt != null)
+				pstmt.close();
+		}
+		return values;
 	}
 	
 	/**

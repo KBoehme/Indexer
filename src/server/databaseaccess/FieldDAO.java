@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import server.database.Database;
 import shared.model.Field;
 
-/** 
+/**
  * @author Kevin
- *
+ * 
  */
 public class FieldDAO {
 
@@ -25,7 +25,7 @@ public class FieldDAO {
 	public FieldDAO() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	/**
 	 * Insert field into the database.
 	 * 
@@ -168,28 +168,27 @@ public class FieldDAO {
 		}
 
 	}
-	
+
 	/**
-	 * This function will return all of the current fields.
+	 * This function will return all of the fields associated with a given projectid.
 	 * 
 	 * @return
 	 * @throws SQLException
 	 */
 	public ArrayList<Field> getFields(int projectid, Database database) throws SQLException {
 		ArrayList<Field> fields = new ArrayList<Field>();
-		
-		Connection con = database.getConnection();
+
 		PreparedStatement pstmt = null;
 		ResultSet results = null;
 
 		try {
 			String sql = "SELECT * FROM fields WHERE projectid = ?";
 			pstmt = database.getConnection().prepareStatement(sql);
-			
+
 			pstmt.setInt(1, projectid);
-			
+
 			results = pstmt.executeQuery();
-			
+
 			while (results.next()) {
 				// Extract all the information from the field we pulled.
 				int id = results.getInt(1);
@@ -200,7 +199,7 @@ public class FieldDAO {
 				String knowndata = results.getString(6);
 				int field_number = results.getInt(7);
 				int projectID = results.getInt(8);
-				
+
 				Field field = new Field(id, title, xcoor, width, helphtml, knowndata, field_number, projectID);
 				fields.add(field);
 			}
@@ -214,6 +213,52 @@ public class FieldDAO {
 				pstmt.close();
 		}
 		return fields;
+	}
+
+	/**
+	 * This function will return all of the current fields.
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public Field getField(int fieldid, Database database) throws SQLException {
+		Field field = null;
+
+		Connection con = database.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet results = null;
+
+		try {
+			String sql = "SELECT * FROM fields WHERE ID = ?";
+			pstmt = database.getConnection().prepareStatement(sql);
+
+			pstmt.setInt(1, fieldid);
+
+			results = pstmt.executeQuery();
+
+			while (results.next()) {
+				// Extract all the information from the field we pulled.
+				int id = results.getInt(1);
+				String title = results.getString(2);
+				int xcoor = results.getInt(3);
+				int width = results.getInt(4);
+				String helphtml = results.getString(5);
+				String knowndata = results.getString(6);
+				int field_number = results.getInt(7);
+				int projectID = results.getInt(8);
+
+				field = new Field(id, title, xcoor, width, helphtml, knowndata, field_number, projectID);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (results != null)
+				results.close();
+			if (pstmt != null)
+				pstmt.close();
+		}
+		return field;
 	}
 
 	/**
@@ -243,7 +288,7 @@ public class FieldDAO {
 				String knowndata = results.getString(6);
 				int field_number = results.getInt(7);
 				int projectID = results.getInt(8);
-				
+
 				Field field = new Field(id, title, xcoor, width, helphtml, knowndata, field_number, projectID);
 				allfields.add(field);
 			}

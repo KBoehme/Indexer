@@ -245,7 +245,7 @@ public class Controller implements IController {
 		SubmitBatch_param sbp = new SubmitBatch_param();
 		SubmitBatch_result result = null;
 
-		//Jones,Fred,13;Rogers,Susan,42;,,;,,;VanFleet,Bill,23”
+		//Jones,Fred,13;Rogers,Susan,42;,,;,,;VanFleet,Bill,23â€�
 		ArrayList<Record> record_list = new ArrayList<Record>();
 		
 		try {

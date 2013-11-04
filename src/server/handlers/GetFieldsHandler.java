@@ -26,8 +26,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  */
 public class GetFieldsHandler extends BaseHandler implements HttpHandler {
 
-	Database database;
-
 	/**
 	 * 
 	 */
@@ -52,7 +50,12 @@ public class GetFieldsHandler extends BaseHandler implements HttpHandler {
 			boolean valid_user = database.getValidateuserdao().validateUser(param.getUsername(), param.getPassword(),
 					database);
 
-			if (valid_user) {
+			Project project = database.getProjectdao().getProject(param.getProjectid(), database);
+			boolean projectexists = true;
+			if(project == null)
+				projectexists = false;
+					
+			if (valid_user && projectexists) {
 				ArrayList<Field> fields = database.getFielddao().getFields(param.getProjectid(), database);
 				result.setFields(fields);
 				
@@ -62,6 +65,7 @@ public class GetFieldsHandler extends BaseHandler implements HttpHandler {
 				super.sendError(result, exchange);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			super.sendError(result, exchange);
 		}
 	}

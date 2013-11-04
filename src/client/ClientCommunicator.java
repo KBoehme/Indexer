@@ -154,7 +154,7 @@ public class ClientCommunicator {
 	 */
 	public Search_result search(Search_param params) {
 		Search_result results = (Search_result) doPost("/Search", params);
-		downloadFile(results.toString());
+		//downloadFile(results.toString());
 		return results;
 	}
 

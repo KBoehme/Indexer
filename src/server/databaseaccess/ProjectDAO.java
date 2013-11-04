@@ -72,7 +72,7 @@ public class ProjectDAO {
 	}
 
 	public Project getProject(int projectid, Database database) throws SQLException {
-		Project project = new Project();
+		Project project = null;
 		System.out.println("WITHIN PROJECTS");
 
 		Connection con = database.getConnection();

@@ -14,8 +14,8 @@ import java.util.ArrayList;
  */
 public class Search_result extends Base_result {
 
-	/* We need to keep a bunch of tuples of the form
-	 * (Batch ID, Image URL, Record Number, Field ID)
+	/*
+	 * We need to keep a bunch of tuples of the form (Batch ID, Image URL, Record Number, Field ID)
 	 */
 
 	private ArrayList<SearchTuple> searchtuples;
@@ -26,10 +26,12 @@ public class Search_result extends Base_result {
 	 */
 	public Search_result() {
 		// TODO Auto-generated constructor stub
+		searchtuples = new ArrayList<SearchTuple>();
 	}
 
 	public String getResultstring() {
 		StringBuilder srb = new StringBuilder();
+		System.out.println("num: " + searchtuples.size());
 		if (super.getSuccess() == 1) { // success
 			for (SearchTuple st : searchtuples) {
 				srb.append(st.getImageID() + "\n");
@@ -60,10 +62,15 @@ public class Search_result extends Base_result {
 	public void setSearchtuples(ArrayList<SearchTuple> searchtuples) {
 		this.searchtuples = searchtuples;
 	}
+	
+	public void addSearchTuple(int imageID, String imageurl, int record_number, int fieldID) {
+		SearchTuple st = new SearchTuple(imageID, imageurl, record_number, fieldID);
+		searchtuples.add(st);
+	}
 
 	private class SearchTuple {
 		private int imageID;
-		private URL imageurl;
+		private String imageurl;
 		private int record_number;
 		private int fieldID;
 
@@ -73,8 +80,7 @@ public class Search_result extends Base_result {
 		 * @param record_number
 		 * @param fieldID
 		 */
-		public SearchTuple(int imageID, URL imageurl, int record_number,
-				int fieldID) {
+		private SearchTuple(int imageID, String imageurl, int record_number, int fieldID) {
 			this.imageID = imageID;
 			this.imageurl = imageurl;
 			this.record_number = record_number;
@@ -84,7 +90,7 @@ public class Search_result extends Base_result {
 		/**
 		 * @return the iD
 		 */
-		public int getImageID() {
+		private int getImageID() {
 			return imageID;
 		}
 
@@ -92,14 +98,14 @@ public class Search_result extends Base_result {
 		 * @param iD
 		 *            the iD to set
 		 */
-		public void setImageID(int imageID) {
+		private void setImageID(int imageID) {
 			imageID = imageID;
 		}
 
 		/**
 		 * @return the imageurl
 		 */
-		public URL getImageurl() {
+		private String getImageurl() {
 			return imageurl;
 		}
 
@@ -107,14 +113,14 @@ public class Search_result extends Base_result {
 		 * @param imageurl
 		 *            the imageurl to set
 		 */
-		public void setImageurl(URL imageurl) {
+		private void setImageurl(String imageurl) {
 			this.imageurl = imageurl;
 		}
 
 		/**
 		 * @return the record_number
 		 */
-		public int getRecord_number() {
+		private int getRecord_number() {
 			return record_number;
 		}
 
@@ -122,14 +128,14 @@ public class Search_result extends Base_result {
 		 * @param record_number
 		 *            the record_number to set
 		 */
-		public void setRecord_number(int record_number) {
+		private void setRecord_number(int record_number) {
 			this.record_number = record_number;
 		}
 
 		/**
 		 * @return the fieldID
 		 */
-		public int getFieldID() {
+		private int getFieldID() {
 			return fieldID;
 		}
 
@@ -137,7 +143,7 @@ public class Search_result extends Base_result {
 		 * @param fieldID
 		 *            the fieldID to set
 		 */
-		public void setFieldID(int fieldID) {
+		private void setFieldID(int fieldID) {
 			this.fieldID = fieldID;
 		}
 
