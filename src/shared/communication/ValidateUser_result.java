@@ -61,7 +61,7 @@ public class ValidateUser_result extends Base_result {
 		} else if(super.getSuccess() == 2){
 			srb.append("FALSE\n");
 		} else {
-			srb.append("3FAILED\n");
+			srb.append("FAILED\n");
 		}
 
 		string = srb.toString();

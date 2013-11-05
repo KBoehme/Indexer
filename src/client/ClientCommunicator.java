@@ -47,14 +47,6 @@ public class ClientCommunicator {
 		this.SERVER_PORT = 8080;
 		this.URL_PREFIX = "http://" + SERVER_HOST + ":" + SERVER_PORT;
 
-		Server server = new Server(SERVER_PORT);
-		try {
-			server.run();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
 	/**
@@ -67,14 +59,6 @@ public class ClientCommunicator {
 		SERVER_HOST = host;
 		SERVER_PORT = port;
 		this.URL_PREFIX = "http://" + SERVER_HOST + ":" + SERVER_PORT;
-
-		Server server = new Server(SERVER_PORT);
-		try {
-			server.run();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 
@@ -119,7 +103,9 @@ public class ClientCommunicator {
 	 */
 	public DownloadBatch_result downloadBatch(DownloadBatch_param params) {
 		DownloadBatch_result results = (DownloadBatch_result) doPost("/DownloadBatch", params);
-		// downloadFiles(results.toString());
+		results.getImage().setFileurl(URL_PREFIX + "/" + "Download/" + results.getImage().getFileurl());
+	
+		//downloadFile(results.getImage().getFileurl());
 		return results;
 	}
 
@@ -154,7 +140,10 @@ public class ClientCommunicator {
 	 */
 	public Search_result search(Search_param params) {
 		Search_result results = (Search_result) doPost("/Search", params);
-		//downloadFile(results.toString());
+		//give the images the correct path info..
+		String prefix = URL_PREFIX + "/" + "Download/";
+		results.setImageUrl(prefix);
+		for()
 		return results;
 	}
 
@@ -166,7 +155,6 @@ public class ClientCommunicator {
 	 */
 	public void downloadFile(String linktofile) {
 		// "http://localhost:39640/Download/users/guest/k/kboehme1/git/Indexer/Recordsimages/1890_image0.png"
-		
 		doGet(linktofile);
 	}
 
@@ -192,13 +180,11 @@ public class ClientCommunicator {
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			try {
 				connection.getInputStream().close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			connection.disconnect();
@@ -233,8 +219,8 @@ public class ClientCommunicator {
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				// It worked.
 				response = xmlstream.fromXML(connection.getInputStream());
-			} else {
-
+			} else { //else it didnt work.
+				response = null;
 			}
 			connection.disconnect();
 		} catch (IOException e) {

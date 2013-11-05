@@ -1,5 +1,5 @@
 
-<project name="Record Indexer" default="compile" basedir=".">
+<project name="Indexer" default="compile" basedir=".">
 
 	<!-- PROPERTIES -->
 	<!-- ********** -->	
@@ -29,7 +29,7 @@
 	<property name="db-file" location="${database}/indexer_server.sqlite"/>
 	
 	<!-- Database file containing empty tables. -->
-	<property name="empty-db-file" location="${database}/indexer_server_empty.sqlite"/>
+	<property name="empty-db-file" location="${database}/empty_indexer_server.sqlite"/>
 	
 	<!-- File containing the report output by Checkstyle -->
 	<property name="checkstyle-report-file" location="checkstyle-report.txt"/>
@@ -83,10 +83,10 @@
 	<!-- ant import -Dfile=Records/Records.xml -->
 	<!-- EXAMPLE: ant import -Dfile=dir1/dir2/indexer_data.xml -->
 	<target name="import" depends="compile" description="import indexer data">
-		<copy file="${empty-db-file}" tofile="${db-file}" overwrite="true"/>
-		<java classname="Main.java" fork="yes">
+	<!--	<copy file="${empty-db-file}" tofile="${db-file}" overwrite="true"/> -->
+		<java classname="utilities.Main" fork="yes">
 			<classpath>
-				<path refid="/src/utilities/Main"/>
+				<path refid="all-classpath"/>
 			</classpath>
 			<arg value="${file}"/>
 			<assertions>
@@ -100,7 +100,7 @@
 	<!-- If port number is omitted, run on default port. -->
 	<!-- EXAMPLE: ant server -->
 	<target name="server" depends="compile" description="run server on specified port">
-		<java classname="THE NAME OF YOUR SERVER CLASS GOES HERE" fork="yes">
+		<java classname="server.Main" fork="yes">
 			<classpath>
 				<path refid="all-classpath"/>
 			</classpath>

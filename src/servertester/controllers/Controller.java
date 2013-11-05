@@ -124,10 +124,7 @@ public class Controller implements IController {
 		String host = _view.getHost();
 		int port = Integer.valueOf(_view.getPort());
 
-		if (first_run) {
-			first_run = false;
-			cc = new ClientCommunicator(host, port);
-		}
+		cc = new ClientCommunicator(host, port);
 
 		// ok time to validate the output here.
 		ValidateUser_param vup = new ValidateUser_param();
@@ -136,12 +133,16 @@ public class Controller implements IController {
 			vup.setUsername(params[0]);
 			vup.setPassword(params[1]);
 			result = cc.validateUser(vup);
+			if (result == null) {
+				result = new ValidateUser_result();
+				result.setSuccess(3);
+			}
 		} catch (Exception e) {
 			result = new ValidateUser_result();
-			result.setSuccess(2);
+			result.setSuccess(3);
 			_view.setResponse(result.getResultstring());
 		}
-		
+
 		// _view.setRequest();
 		_view.setResponse(result.getResultstring());
 	}
@@ -151,10 +152,7 @@ public class Controller implements IController {
 		String host = _view.getHost();
 		int port = Integer.valueOf(_view.getPort());
 
-		if (first_run) {
-			first_run = false;
-			cc = new ClientCommunicator(host, port);
-		}
+		cc = new ClientCommunicator(host, port);
 
 		// ok time to validate the output here.
 		GetProjects_param gpp = new GetProjects_param();
@@ -164,7 +162,11 @@ public class Controller implements IController {
 			gpp.setUsername(params[0]);
 			gpp.setPassword(params[1]);
 			result = cc.getProjects(gpp);
-			
+			if (result == null) {
+				result = new GetProjects_result();
+				result.setSuccess(2);
+			}
+
 		} catch (Exception e) {
 			result = new GetProjects_result();
 			result.setSuccess(2);
@@ -179,10 +181,7 @@ public class Controller implements IController {
 		String host = _view.getHost();
 		int port = Integer.valueOf(_view.getPort());
 
-		if (first_run) {
-			first_run = false;
-			cc = new ClientCommunicator(host, port);
-		}
+		cc = new ClientCommunicator(host, port);
 
 		// ok time to validate the output here.
 		GetSampleImage_param gsi = new GetSampleImage_param();
@@ -193,6 +192,10 @@ public class Controller implements IController {
 			gsi.setPassword(params[1]);
 			gsi.setProjectid(Integer.valueOf(params[2]));
 			result = cc.getSampleImage(gsi);
+			if (result == null) {
+				result = new GetSampleImage_result();
+				result.setSuccess(2);
+			}
 		} catch (Exception e) {
 			result = new GetSampleImage_result();
 			result.setSuccess(2);
@@ -207,27 +210,30 @@ public class Controller implements IController {
 		String host = _view.getHost();
 		int port = Integer.valueOf(_view.getPort());
 
-		if (first_run) {
-			first_run = false;
-			cc = new ClientCommunicator(host, port);
-		}
+		cc = new ClientCommunicator(host, port);
 
 		// ok time to validate the output here.
 		DownloadBatch_param dbp = new DownloadBatch_param();
 		DownloadBatch_result result = null;
-		
+
 		try {
 			dbp.setUsername(params[0]);
 			dbp.setPassword(params[1]);
 			dbp.setProjectid(Integer.valueOf(params[2]));
 			result = cc.downloadBatch(dbp);
+			if (result == null) {
+				result = new DownloadBatch_result();
+				result.setSuccess(2);
+			} else {
+				//lets append the necessary info for the helphtmls..
+			}
 		} catch (Exception e) {
 			result = new DownloadBatch_result();
 			result.setSuccess(2);
-			_view.setResponse(result.getResultstring());
+			_view.setResponse(result.getResultstring(null, null));
 		}
 
-		_view.setResponse(result.getResultstring());
+		_view.setResponse(result.getResultstring(host, String.valueOf(port)));
 
 	}
 
@@ -236,32 +242,31 @@ public class Controller implements IController {
 		String host = _view.getHost();
 		int port = Integer.valueOf(_view.getPort());
 
-		if (first_run) {
-			first_run = false;
-			cc = new ClientCommunicator(host, port);
-		}
+		cc = new ClientCommunicator(host, port);
 
 		// ok time to validate the output here.
 		SubmitBatch_param sbp = new SubmitBatch_param();
 		SubmitBatch_result result = null;
 
-		//Jones,Fred,13;Rogers,Susan,42;,,;,,;VanFleet,Bill,23â€�
+		// Jones,Fred,13;Rogers,Susan,42;,,;,,;VanFleet,Bill,23â€�
 		ArrayList<Record> record_list = new ArrayList<Record>();
-		
+
 		try {
 			sbp.setUsername(params[0]);
 			sbp.setPassword(params[1]);
 			sbp.setImageid(Integer.valueOf(params[2]));
 			sbp.setRecord_values(record_list);
 			String[] records = params[3].split(";");
-			for(int k = 0; k < records.length; k++) { //k is the row number
-				Record record = new Record(-1, k+1, sbp.getImageid(), true);
+			for (int k = 0; k < records.length; k++) { // k is the row number
+				Record record = new Record(-1, k + 1, sbp.getImageid(), true);
 				ArrayList<Value> value_list = new ArrayList<Value>();
-				String[] values = records[k].split(",",-1);
-				for(int i = 0; i < values.length; i++) { // i is the field number.
+				String[] values = records[k].split(",", -1);
+				for (int i = 0; i < values.length; i++) { // i is the field
+															// number.
 					System.out.println("value: " + values[i]);
-					//	public Value(int iD, String value, int fieldnum, int rownum, int imageID, int recordID) {
-					Value v = new Value(-1, values[i], i+1,k+1,-1, -1);
+					// public Value(int iD, String value, int fieldnum, int
+					// rownum, int imageID, int recordID) {
+					Value v = new Value(-1, values[i], i + 1, k + 1, -1, -1);
 					value_list.add(v);
 				}
 				record.setValues(value_list);
@@ -269,12 +274,16 @@ public class Controller implements IController {
 			}
 			sbp.setRecord_values(record_list);
 			result = cc.submitBatch(sbp);
+			if (result == null) {
+				result = new SubmitBatch_result();
+				result.setSuccess(2);
+			}
 		} catch (Exception e) {
 			result = new SubmitBatch_result();
 			result.setSuccess(2);
 			_view.setResponse(result.getResultstring());
 		}
-		
+
 		_view.setResponse(result.getResultstring());
 	}
 
@@ -283,11 +292,8 @@ public class Controller implements IController {
 		String host = _view.getHost();
 		int port = Integer.valueOf(_view.getPort());
 
-		if (first_run) {
-			first_run = false;
-			cc = new ClientCommunicator(host, port);
-		}
-		
+		cc = new ClientCommunicator(host, port);
+
 		// ok time to validate the output here.
 		GetFields_param gpp = new GetFields_param();
 		GetFields_result result = null;
@@ -297,6 +303,10 @@ public class Controller implements IController {
 			gpp.setPassword(params[1]);
 			gpp.setProjectid(Integer.valueOf(params[2]));
 			result = cc.getFields(gpp);
+			if (result == null) {
+				result = new GetFields_result();
+				result.setSuccess(2);
+			}
 		} catch (Exception e) {
 			result = new GetFields_result();
 			result.setSuccess(2);
@@ -304,7 +314,7 @@ public class Controller implements IController {
 		}
 
 		_view.setResponse(result.getResultstring());
-		
+
 	}
 
 	private void search() {
@@ -312,10 +322,7 @@ public class Controller implements IController {
 		String host = _view.getHost();
 		int port = Integer.valueOf(_view.getPort());
 
-		if (first_run) {
-			first_run = false;
-			cc = new ClientCommunicator(host, port);
-		}
+		cc = new ClientCommunicator(host, port);
 
 		// ok time to validate the output here.
 		Search_param s_param = new Search_param();
@@ -329,19 +336,22 @@ public class Controller implements IController {
 			String[] field_split = params[2].split(",");
 			String[] search_split = params[3].split(",");
 
-			for(String field : field_split) {
+			for (String field : field_split) {
 				int fid = Integer.valueOf(field);
 				fields.add(fid);
 			}
-			for(String search : search_split) {
+			for (String search : search_split) {
 				search_values.add(search);
 			}
 			s_param.setFields(fields);
 			s_param.setSearch_values(search_values);
-			
-			result = cc.search(s_param);
 
-		} catch(Exception e) {
+			result = cc.search(s_param);
+			if (result == null) {
+				result = new Search_result();
+				result.setSuccess(2);
+			}
+		} catch (Exception e) {
 			result = new Search_result();
 			result.setSuccess(2);
 			_view.setResponse(result.getResultstring());

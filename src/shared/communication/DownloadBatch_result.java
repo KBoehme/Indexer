@@ -143,7 +143,7 @@ public class DownloadBatch_result {
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getResultstring() {
+	public String getResultstring(String host, String port) {
 		StringBuilder srb = new StringBuilder();
 		if(this.success == 1) { //success
 			srb.append(image.getID() + "\n");
@@ -151,17 +151,17 @@ public class DownloadBatch_result {
 			srb.append(image.getFileurl() + "\n");
 			srb.append(project.getFirstycoord() + "\n");
 			srb.append(project.getRecordheight() + "\n");
-			srb.append(this.num_records + "\n");
+			srb.append(project.getRecordsperimage() + "\n");
 			srb.append(this.getFields().size() + "\n");
 			for(Field field : fields) {
 				srb.append(field.getID() + "\n");
 				srb.append(field.getField_number() + "\n");
 				srb.append(field.getTitle() + "\n");
-				srb.append(field.getHelphtml() + "\n");
+				srb.append("http://" + host + ":" + port + "/Download/ImportedData/" + field.getHelphtml() + "\n");
 				srb.append(field.getX_cor() + "\n");
 				srb.append(field.getWidth() + "\n");
 				if(field.getKnowndata() != null) {
-					srb.append(field.getKnowndata() + "\n");
+					srb.append("http://" + host + ":" + port + "/Download/ImportedData/" + field.getKnowndata() + "\n");
 				}
 			}
 

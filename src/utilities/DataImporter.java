@@ -36,7 +36,7 @@ public class DataImporter {
 	public void createAllTables(Database database) throws SQLException {
 		// TODO : figure out how to use this stuff??
 
-		System.out.println("create all tables");
+		//System.out.println("create all tables");
 
 		Statement stmt = null;
 		Scanner s = null;

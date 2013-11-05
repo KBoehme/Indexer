@@ -28,6 +28,14 @@ public class Search_result extends Base_result {
 		// TODO Auto-generated constructor stub
 		searchtuples = new ArrayList<SearchTuple>();
 	}
+	
+	
+	public void setImageUrl(String prefix) {
+		for(SearchTuple st : searchtuples) {
+			st.fixURL(prefix);
+		}
+	}
+
 
 	public String getResultstring() {
 		StringBuilder srb = new StringBuilder();
@@ -100,6 +108,10 @@ public class Search_result extends Base_result {
 		 */
 		private void setImageID(int imageID) {
 			imageID = imageID;
+		}
+		
+		private void fixURL(String prefix) {
+			imageurl = prefix+imageurl;
 		}
 
 		/**

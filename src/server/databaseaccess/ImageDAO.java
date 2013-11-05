@@ -280,8 +280,7 @@ public class ImageDAO {
 		try {
 			String addsql = "UPDATE images SET ID = ?, file = ?, hasbeenindexed = ?, projectID = ? WHERE ID = ?";
 
-			// System.out.println("image file: " + image.getFileurl());
-			// System.out.println("bool : " + image.isHasbeenindexed());
+
 			pstmt = con.prepareStatement(addsql);
 			pstmt.setInt(1, image.getID());
 			pstmt.setString(2, image.getFileurl());

@@ -56,11 +56,10 @@ public class DownloadBatchHandler implements HttpHandler  {
 			exchange.getRequestBody().close();
 
 			
-			// Check to see if we are given valid user information befor continuing.
+			// Check to see if we are given valid user information before continuing.
 			boolean valid_user = database.getValidateuserdao().validateUser(
 					param.getUsername(), param.getPassword(), database);
 			
-
 			if (valid_user) {
 				User user = new User();
 				user = database.getUserdao().getUser(param.getUsername(), param.getPassword(), database);

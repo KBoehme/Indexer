@@ -80,7 +80,7 @@ public class SubmitBatchHandler extends BaseHandler implements HttpHandler {
 				}
 
 				user.setCurr_batch_id(-1);
-				int num_records = user.getNum_indexed_records() + 1;
+				int num_records = user.getNum_indexed_records() + project.getRecordsperimage();
 				user.setNum_indexed_records(num_records);
 				database.getUserdao().update(user, database);
 

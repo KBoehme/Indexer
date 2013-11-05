@@ -53,17 +53,21 @@ public class ValidateUserHandler extends BaseHandler implements HttpHandler {
 					param.getUsername(), param.getPassword(), super.database);
 
 			if (valid_user) {
-				System.out.println("here");
+				//System.out.println("here");
 				result.setUser(user);
 				
 				super.sendOK(result, exchange);
 				
-			} else {
+			} else { //non valid user
 				super.sendError(result, exchange);
 			}
 
 		} catch (Exception e) {
-			super.sendError(result, exchange);
+			result.setSuccess(3);
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+			xmlstream.toXML(result, exchange.getResponseBody());
+			exchange.getResponseBody().close();
+			database.endTransaction(false);
 		}
 	}
 }

@@ -41,16 +41,17 @@ public class UserDAO {
 	 * @throws SQLException
 	 */
 	public ArrayList<User> getAll(Database database) throws SQLException {
+		
 		ArrayList<User> allUsers = new ArrayList<User>();
-		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
-		Statement stmt = null;
 		ResultSet results = null;
 
 		try {
 			String sql = "SELECT * FROM Users";
-			stmt = database.getConnection().prepareStatement(sql);
-			results = stmt.executeQuery(sql);
+			pstmt = database.getConnection().prepareStatement(sql);
+			
+			results = pstmt.executeQuery();
+
 			while (results.next()) {
 				// Extract all the information from the User we pulled.
 				int id = results.getInt(1);
@@ -66,13 +67,12 @@ public class UserDAO {
 				allUsers.add(user);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if (results != null)
 				results.close();
-			if (stmt != null)
-				stmt.close();
+			if (pstmt != null)
+				pstmt.close();
 		}
 		return allUsers;
 	}
@@ -86,7 +86,6 @@ public class UserDAO {
 
 		try {
 			String sql = "SELECT * FROM Users WHERE username = ?";
-			System.out.println(database);
 			pstmt = database.getConnection().prepareStatement(sql);
 
 			pstmt.setString(1, get_username);
@@ -94,7 +93,7 @@ public class UserDAO {
 			results = pstmt.executeQuery();
 
 			while (results.next()) {
-				if(get_password.equals(results.getString(3))) {
+				if (get_password.equals(results.getString(3))) {
 					// Extract all the information from the User we pulled.
 					int id = results.getInt(1);
 					String username = results.getString(2);
@@ -105,8 +104,8 @@ public class UserDAO {
 					int num_indexed_records = results.getInt(7);
 					int current_batch_id = results.getInt(8);
 
-					user = new User(username, password, firstname, lastname, email,
-							num_indexed_records, current_batch_id);
+					user = new User(username, password, firstname, lastname,
+							email, num_indexed_records, current_batch_id);
 					user.setID(id);
 				}
 			}
@@ -133,14 +132,13 @@ public class UserDAO {
 	 */
 	public void insert(User user, Database database) throws SQLException {
 
-		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		Statement stmt = null;
 		ResultSet results = null;
 
 		try {
-			String sql = "INSERT INTO users (username, password, firstname, lastname, email, num_indexed_records, current_batch_id) VALUES (?,?,?,?,?,?,?)";
-			pstmt = con.prepareStatement(sql);
+			String sql = "INSERT INTO Users (username, password, firstname, lastname, email, num_indexed_records, current_batch_id) VALUES (?,?,?,?,?,?,?)";
+			pstmt = database.getConnection().prepareStatement(sql);
 
 			pstmt.setString(1, user.getUsername());
 			pstmt.setString(2, user.getPassword());
@@ -151,12 +149,6 @@ public class UserDAO {
 			pstmt.setLong(7, user.getCurr_batch_id());
 
 			if (pstmt.executeUpdate() == 1) {
-				// System.out.println("Success: User inserted into database.");
-				stmt = con.createStatement();
-				// results = stmt.executeQuery("SELECT last_insert.rowid()");
-				// results.next();
-				// int uid = results.getInt(1); // ID of the new user
-				// user.setID(uid);
 			} else {
 				System.out
 						.println("Failed: Unable to insert user into database.");
@@ -166,11 +158,9 @@ public class UserDAO {
 			e.printStackTrace();
 		} finally {
 			if (pstmt != null)
-				stmt.close();
+				pstmt.close();
 			if (results != null)
 				results.close();
-			if (stmt != null)
-				stmt.close();
 		}
 	}
 
@@ -190,13 +180,9 @@ public class UserDAO {
 			String addsql = "UPDATE Users SET num_indexed_records = ? , current_batch_id = ? WHERE ID = ?";
 			pstmt = con.prepareStatement(addsql);
 
-			System.out.println(user.getCurr_batch_id());
-			System.out.println(user.getID());
-			
 			pstmt.setInt(1, user.getNum_indexed_records());
 			pstmt.setInt(2, user.getCurr_batch_id());
 			pstmt.setInt(3, user.getID());
-
 
 			if (pstmt.executeUpdate() == 1) {
 				System.out.println("Success: User updated.");
@@ -268,5 +254,36 @@ public class UserDAO {
 				results.close();
 		}
 
+	}
+
+	/**
+	 * Delete all user from the database.
+	 * 
+	 * @throws SQLException
+	 * 
+	 */
+	public void deleteAll(Database database) throws SQLException {
+
+		PreparedStatement pstmt = null;
+		ResultSet results = null;
+
+		try {
+			String sql = "DROP TABLE IF EXISTS Users;";
+			String sql2 = "CREATE TABLE Users(ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , username VARCHAR NOT NULL  UNIQUE , password VARCHAR NOT NULL , firstname VARCHAR NOT NULL , lastname VARCHAR NOT NULL , email VARCHAR UNIQUE , num_indexed_records INTEGER, current_batch_id INTEGER DEFAULT -1);";
+			
+			pstmt = database.getConnection().prepareStatement(sql);
+			pstmt.execute();
+			
+			pstmt = database.getConnection().prepareStatement(sql2);
+			pstmt.execute();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (results != null)
+				results.close();
+		}
 	}
 }
