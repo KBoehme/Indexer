@@ -1,4 +1,5 @@
-/server
 /client
-/servertester
+/server
 /shared
+/servertester
+/searchgui

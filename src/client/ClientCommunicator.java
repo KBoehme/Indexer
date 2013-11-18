@@ -1,16 +1,13 @@
 package client;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
 
-import server.Server;
 import shared.communication.DownloadBatch_param;
 import shared.communication.DownloadBatch_result;
 import shared.communication.GetFields_param;
@@ -42,7 +39,6 @@ public class ClientCommunicator {
 	 * This is a constuctor with default port and localhost.
 	 */
 	public ClientCommunicator() {
-		// TODO Auto-generated constructor stub
 		this.SERVER_HOST = "localhost";
 		this.SERVER_PORT = 8080;
 		this.URL_PREFIX = "http://" + SERVER_HOST + ":" + SERVER_PORT;
@@ -54,12 +50,13 @@ public class ClientCommunicator {
 	 * 
 	 * @param host
 	 * @param port
+	 * @throws IOException 
 	 */
 	public ClientCommunicator(String host, int port) {
 		SERVER_HOST = host;
 		SERVER_PORT = port;
 		this.URL_PREFIX = "http://" + SERVER_HOST + ":" + SERVER_PORT;
-
+		
 	}
 
 	/**
@@ -69,11 +66,12 @@ public class ClientCommunicator {
 	 * @return
 	 */
 	public ValidateUser_result validateUser(ValidateUser_param params) {
-		ValidateUser_result res = (ValidateUser_result) doPost("/ValidateUser", params);
+		ValidateUser_result res = (ValidateUser_result) doPost("/ValidateUser",params);
 		return res;
 	}
 
-	/**GET PROJECTS Returns information about all of the available projects
+	/**
+	 * GET PROJECTS Returns information about all of the available projects
 	 * 
 	 * @param params
 	 * @return
@@ -90,8 +88,8 @@ public class ClientCommunicator {
 	 */
 	public GetSampleImage_result getSampleImage(GetSampleImage_param params) {
 		GetSampleImage_result results = (GetSampleImage_result) doPost("/GetSampleImage", params);
-		results.getImage().setFileurl(URL_PREFIX + "/" + "Download/" + results.getImage().getFileurl());
-		downloadFile(results.getImage().getFileurl());
+		results.getImage().setFileurl(URL_PREFIX + "/" + "Download/"+ results.getImage().getFileurl());
+		// downloadFile(results.getImage().getFileurl());
 		return results;
 	}
 
@@ -103,14 +101,13 @@ public class ClientCommunicator {
 	 */
 	public DownloadBatch_result downloadBatch(DownloadBatch_param params) {
 		DownloadBatch_result results = (DownloadBatch_result) doPost("/DownloadBatch", params);
-		results.getImage().setFileurl(URL_PREFIX + "/" + "Download/" + results.getImage().getFileurl());
-	
-		//downloadFile(results.getImage().getFileurl());
+		results.getImage().setFileurl(URL_PREFIX + "/" + "Download/"+ results.getImage().getFileurl());
 		return results;
 	}
 
 	/**
-	 * SUBMIT BATCH Submits the indexed record field values for a batch to the Server
+	 * SUBMIT BATCH Submits the indexed record field values for a batch to the
+	 * Server
 	 * 
 	 * @param params
 	 * @return
@@ -120,8 +117,9 @@ public class ClientCommunicator {
 	}
 
 	/**
-	 * GET FIELDS Returns information about all of the fields for the specified project If no project is specified, returns
-	 * information about all of the fields for all projects in the system
+	 * GET FIELDS Returns information about all of the fields for the specified
+	 * project If no project is specified, returns information about all of the
+	 * fields for all projects in the system
 	 * 
 	 * OUTPUT ::= FAILED\n FAILED\n
 	 * 
@@ -140,10 +138,9 @@ public class ClientCommunicator {
 	 */
 	public Search_result search(Search_param params) {
 		Search_result results = (Search_result) doPost("/Search", params);
-		//give the images the correct path info..
+		// give the images the correct path info..
 		String prefix = URL_PREFIX + "/" + "Download/";
 		results.setImageUrl(prefix);
-		for()
 		return results;
 	}
 
@@ -154,7 +151,6 @@ public class ClientCommunicator {
 	 * @return
 	 */
 	public void downloadFile(String linktofile) {
-		// "http://localhost:39640/Download/users/guest/k/kboehme1/git/Indexer/Recordsimages/1890_image0.png"
 		doGet(linktofile);
 	}
 
@@ -204,7 +200,6 @@ public class ClientCommunicator {
 		HttpURLConnection connection = null;
 		Object response = null;
 		XStream xmlstream = new XStream(new DomDriver());
-
 		try {
 			URL url = new URL(URL_PREFIX + urlPath);
 			connection = (HttpURLConnection) url.openConnection();
@@ -219,8 +214,9 @@ public class ClientCommunicator {
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				// It worked.
 				response = xmlstream.fromXML(connection.getInputStream());
-			} else { //else it didnt work.
+			} else { // else it didnt work.
 				response = null;
+				System.out.println("bad");
 			}
 			connection.disconnect();
 		} catch (IOException e) {
@@ -260,4 +256,49 @@ public class ClientCommunicator {
 		}
 
 	}
+
+	/**
+	 * @return the sERVER_HOST
+	 */
+	public String getSERVER_HOST() {
+		return SERVER_HOST;
+	}
+
+	/**
+	 * @param sERVER_HOST the sERVER_HOST to set
+	 */
+	public void setSERVER_HOST(String sERVER_HOST) {
+		SERVER_HOST = sERVER_HOST;
+	}
+
+	/**
+	 * @return the sERVER_PORT
+	 */
+	public int getSERVER_PORT() {
+		return SERVER_PORT;
+	}
+
+	/**
+	 * @param sERVER_PORT the sERVER_PORT to set
+	 */
+	public void setSERVER_PORT(int sERVER_PORT) {
+		SERVER_PORT = sERVER_PORT;
+	}
+
+	/**
+	 * @return the uRL_PREFIX
+	 */
+	public String getURL_PREFIX() {
+		return URL_PREFIX;
+	}
+
+	/**
+	 * @param uRL_PREFIX the uRL_PREFIX to set
+	 */
+	public void setURL_PREFIX(String uRL_PREFIX) {
+		URL_PREFIX = uRL_PREFIX;
+	}
+	
+	
+	
 }

@@ -35,7 +35,6 @@ public class BaseHandler {
 	}
 	
 	public void sendOK(Base_result result, HttpExchange exchange) throws IOException {
-		System.out.println("Sending OK");
 		result.setSuccess(1);
 		exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 		xmlstream.toXML(result, exchange.getResponseBody());

@@ -31,6 +31,10 @@ public class Server {
 	public Server(int port) {
 		SERVER_PORT = port;
 	}
+	
+	public int getPort() {
+		return this.SERVER_PORT;
+	}
 
 	public void run() throws IOException {
 

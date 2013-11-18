@@ -82,7 +82,6 @@ public class FieldDAO {
 
 		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
-		Statement stmt = null;
 		ResultSet results = null;
 
 		try {
@@ -109,11 +108,9 @@ public class FieldDAO {
 			e.printStackTrace();
 		} finally {
 			if (pstmt != null)
-				stmt.close();
+				pstmt.close();
 			if (results != null)
 				results.close();
-			if (stmt != null)
-				stmt.close();
 		}
 	}
 
@@ -126,7 +123,6 @@ public class FieldDAO {
 		// Query looks for information given a fields input
 		Connection con = database.getConnection();
 		Statement stmt = null;
-		ResultSet results = null;
 
 		try {
 			String sql = "SELECT FROM fields WHERE fields.ID =" + field.getID();
@@ -166,7 +162,6 @@ public class FieldDAO {
 			if (results != null)
 				results.close();
 		}
-
 	}
 
 	/**
@@ -224,7 +219,6 @@ public class FieldDAO {
 	public Field getField(int fieldid, Database database) throws SQLException {
 		Field field = null;
 
-		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet results = null;
 
@@ -269,15 +263,15 @@ public class FieldDAO {
 	 */
 	public ArrayList<Field> getAll(Database database) throws SQLException {
 		ArrayList<Field> allfields = new ArrayList<Field>();
-		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
-		Statement stmt = null;
 		ResultSet results = null;
 
 		try {
 			String sql = "SELECT * FROM fields";
-			stmt = database.getConnection().prepareStatement(sql);
-			results = stmt.executeQuery(sql);
+			pstmt = database.getConnection().prepareStatement(sql);
+
+			results = pstmt.executeQuery();
+
 			while (results.next()) {
 				// Extract all the information from the field we pulled.
 				int id = results.getInt(1);
@@ -293,14 +287,44 @@ public class FieldDAO {
 				allfields.add(field);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if (results != null)
 				results.close();
-			if (stmt != null)
-				stmt.close();
+			if (pstmt != null)
+				pstmt.close();
 		}
 		return allfields;
 	}
+	
+	/**
+	 * Delete all fields from the database.
+	 * 
+	 * @throws SQLException
+	 * 
+	 */
+	public void deleteAll(Database database) throws SQLException {
+
+		PreparedStatement pstmt = null;
+		ResultSet results = null;
+
+		try {
+			String sql = "DROP TABLE IF EXISTS Fields;";
+			String sql2 = "CREATE TABLE Fields (ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , title VARCHAR NOT NULL ,xcoor INTEGER NOT NULL , width INTEGER,helphtml VARCHAR ,knowndata VARCHAR, field_number INTEGER NOT NULL ,projectID INTEGER NOT NULL );";
+			pstmt = database.getConnection().prepareStatement(sql);
+			pstmt.execute();
+
+			pstmt = database.getConnection().prepareStatement(sql2);
+			pstmt.execute();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (results != null)
+				results.close();
+		}
+	}
+
 }

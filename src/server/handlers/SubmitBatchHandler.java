@@ -75,10 +75,12 @@ public class SubmitBatchHandler extends BaseHandler implements HttpHandler {
 					}
 					for (Value value : values) {
 						value.setRecordID(record_id);
+						value.setImageID(image.getID());
 						database.getValuedao().insert(value, database);
 					}
 				}
 
+				
 				user.setCurr_batch_id(-1);
 				int num_records = user.getNum_indexed_records() + project.getRecordsperimage();
 				user.setNum_indexed_records(num_records);

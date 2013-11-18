@@ -85,8 +85,7 @@ public class Controller implements IController {
 
 		getView().setRequest("");
 		getView().setResponse("");
-		getView().setParameterNames(
-				paramNames.toArray(new String[paramNames.size()]));
+		getView().setParameterNames(paramNames.toArray(new String[paramNames.size()]));
 	}
 
 	@Override
@@ -225,7 +224,7 @@ public class Controller implements IController {
 				result = new DownloadBatch_result();
 				result.setSuccess(2);
 			} else {
-				//lets append the necessary info for the helphtmls..
+				// lets append the necessary info for the helphtmls..
 			}
 		} catch (Exception e) {
 			result = new DownloadBatch_result();
@@ -301,7 +300,11 @@ public class Controller implements IController {
 		try {
 			gpp.setUsername(params[0]);
 			gpp.setPassword(params[1]);
-			gpp.setProjectid(Integer.valueOf(params[2]));
+			if (params[2].isEmpty()) {
+				System.out.println("hey");
+				gpp.setProjectid(0);
+			} else
+				gpp.setProjectid(Integer.valueOf(params[2]));
 			result = cc.getFields(gpp);
 			if (result == null) {
 				result = new GetFields_result();

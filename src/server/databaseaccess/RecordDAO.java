@@ -36,36 +36,28 @@ public class RecordDAO {
 
 		ArrayList<Record> allrecords = new ArrayList<Record>();
 
-		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
-		Statement stmt = null;
 		ResultSet results = null;
 
 		try {
 			String sql = "SELECT * FROM records";
-			stmt = database.getConnection().prepareStatement(sql);
-			results = stmt.executeQuery(sql);
+			pstmt = database.getConnection().prepareStatement(sql);
+			
+			
+			results = pstmt.executeQuery();
 			while (results.next()) {
-				// Extract all the information from the record we pulled.
-				// int id = results.getInt(1);
-				// String recordname = results.getString(2);
-				// String password = results.getString(3);
-				// String firstname = results.getString(4);
-				// String lastname = results.getString(5);
-				// String email = results.getString(6);
-				// int num_indexed_records = results.getInt(7);
-				// int current_batch_id = results.getInt(8);
-				// Record record = new Record(-1, );
-				// allrecords.add(record);
+				//TODO : get the record information here.
+				Record record = new Record();
+				allrecords.add(record);
 			}
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if (results != null)
 				results.close();
-			if (stmt != null)
-				stmt.close();
+			if (pstmt != null)
+				pstmt.close();
 		}
 		return allrecords;
 	}
@@ -221,18 +213,17 @@ public class RecordDAO {
 	 */
 	public void delete(Record record, Database database) throws SQLException {
 
-		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet results = null;
 
 		try {
-			String sql = "DELETE FROM record WHERE (rownumber, projectID, imageID) VALUES (?,?,?)";
-			pstmt = con.prepareStatement(sql);
+			String sql = "DELETE FROM Records WHERE rownumber=? AND imageid=?";
+			pstmt = database.getConnection().prepareStatement(sql);
 
 			pstmt.setInt(1, record.getRownumber());
-			pstmt.setInt(3, record.getImageID());
+			pstmt.setInt(2, record.getImageID());
 
-			if (pstmt.executeUpdate(sql) == 1) {
+			if (pstmt.executeUpdate() == 1) {
 			} else {
 				System.out
 						.println("Failed: Unable to delete record from database.");
@@ -245,6 +236,36 @@ public class RecordDAO {
 			if (results != null)
 				results.close();
 		}
+	}
+	
+	/**
+	 * Delete all records from the database.
+	 * 
+	 * @throws SQLException
+	 * 
+	 */
+	public void deleteAll(Database database) throws SQLException {
 
+		PreparedStatement pstmt = null;
+		ResultSet results = null;
+
+		try {
+			String sql = "DROP TABLE IF EXISTS Records;";
+			String sql2 = "CREATE TABLE Records(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,rownumber INTEGER NOT NULL ,imageID INTEGER ,hasvalues BOOL DEFAULT 0);";
+			
+			pstmt = database.getConnection().prepareStatement(sql);
+			pstmt.execute();
+			
+			pstmt = database.getConnection().prepareStatement(sql2);
+			pstmt.execute();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (results != null)
+				results.close();
+		}
 	}
 }

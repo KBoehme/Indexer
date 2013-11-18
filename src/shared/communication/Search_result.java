@@ -21,6 +21,15 @@ public class Search_result extends Base_result {
 	private ArrayList<SearchTuple> searchtuples;
 	private String result_string;
 
+	public ArrayList<String> getURLS() {
+		ArrayList<String> urls = new ArrayList<String>();
+
+		for (SearchTuple st : searchtuples) {
+			urls.add(st.getImageurl());
+		}
+		return urls;
+	}
+
 	/**
 	 * 
 	 */
@@ -28,14 +37,12 @@ public class Search_result extends Base_result {
 		// TODO Auto-generated constructor stub
 		searchtuples = new ArrayList<SearchTuple>();
 	}
-	
-	
+
 	public void setImageUrl(String prefix) {
-		for(SearchTuple st : searchtuples) {
+		for (SearchTuple st : searchtuples) {
 			st.fixURL(prefix);
 		}
 	}
-
 
 	public String getResultstring() {
 		StringBuilder srb = new StringBuilder();
@@ -70,7 +77,7 @@ public class Search_result extends Base_result {
 	public void setSearchtuples(ArrayList<SearchTuple> searchtuples) {
 		this.searchtuples = searchtuples;
 	}
-	
+
 	public void addSearchTuple(int imageID, String imageurl, int record_number, int fieldID) {
 		SearchTuple st = new SearchTuple(imageID, imageurl, record_number, fieldID);
 		searchtuples.add(st);
@@ -109,9 +116,9 @@ public class Search_result extends Base_result {
 		private void setImageID(int imageID) {
 			imageID = imageID;
 		}
-		
+
 		private void fixURL(String prefix) {
-			imageurl = prefix+imageurl;
+			imageurl = prefix + imageurl;
 		}
 
 		/**

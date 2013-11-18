@@ -40,15 +40,15 @@ public class ImageDAO {
 	public ArrayList<Image> getAllImages(Database database)
 			throws MalformedURLException, SQLException {
 		ArrayList<Image> allimages = new ArrayList<Image>();
-		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
-		Statement stmt = null;
 		ResultSet results = null;
 
 		try {
-			String sql = "SELECT * FROM images";
-			stmt = database.getConnection().prepareStatement(sql);
-			results = stmt.executeQuery(sql);
+			String sql = "SELECT * FROM Images";
+			pstmt = database.getConnection().prepareStatement(sql);
+			
+			results = pstmt.executeQuery();
+			
 			while (results.next()) {
 				// Extract all the information from the image we pulled.
 				int id = results.getInt(1);
@@ -60,13 +60,12 @@ public class ImageDAO {
 				allimages.add(image);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if (results != null)
 				results.close();
-			if (stmt != null)
-				stmt.close();
+			if (pstmt != null)
+				pstmt.close();
 		}
 		return allimages;
 	}
@@ -278,16 +277,13 @@ public class ImageDAO {
 		ResultSet results = null;
 
 		try {
-			String addsql = "UPDATE images SET ID = ?, file = ?, hasbeenindexed = ?, projectID = ? WHERE ID = ?";
-
-
+			String addsql = "UPDATE images SET hasbeenindexed = ? WHERE ID = ?";
 			pstmt = con.prepareStatement(addsql);
-			pstmt.setInt(1, image.getID());
-			pstmt.setString(2, image.getFileurl());
-			pstmt.setBoolean(3, image.isHasbeenindexed());
-			pstmt.setInt(4, image.getProjectID());
-			pstmt.setInt(5, image.getID());
-
+			
+			
+			pstmt.setBoolean(1, image.isHasbeenindexed());
+			pstmt.setInt(2, image.getID());
+			
 			if (pstmt.executeUpdate() == 1) {
 				// System.out.println("Success: image updated.");
 			} else {
@@ -315,26 +311,55 @@ public class ImageDAO {
 	public void delete(Image image, Database database) throws SQLException {
 
 		Connection con = database.getConnection();
-		Statement stmt = null;
+		PreparedStatement pstmt = null;
 		ResultSet results = null;
 
 		try {
-			String sql = "DELETE FROM image WHERE id = " + image.getID();
-			stmt = con.prepareStatement(sql);
-			if (stmt.executeUpdate(sql) == 1) {
+			String sql = "DELETE FROM Images WHERE id = " + image.getID();
+			pstmt = con.prepareStatement(sql);
+			if (pstmt.executeUpdate() == 1) {
 				System.out.println("Success: image deleted from database.");
 			} else {
-				System.out
-						.println("Failed: Unable to delete image from database.");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (stmt != null)
-				stmt.close();
+			if (pstmt != null)
+				pstmt.close();
 			if (results != null)
 				results.close();
 		}
 	}
 
+	/**
+	 * Delete all images from the database.
+	 * 
+	 * @throws SQLException
+	 * 
+	 */
+	public void deleteAll(Database database) throws SQLException {
+
+		PreparedStatement pstmt = null;
+		ResultSet results = null;
+
+		try {
+			String sql = "DROP TABLE IF EXISTS Images;";
+			String sql2 = "CREATE TABLE Images(ID INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL ,file VARCHAR NOT NULL UNIQUE ,	hasbeenindexed BOOL DEFAULT 0,projectID INTEGER);";		
+			
+			pstmt = database.getConnection().prepareStatement(sql);
+			pstmt.execute();
+			
+			pstmt = database.getConnection().prepareStatement(sql2);
+			pstmt.execute();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (results != null)
+				results.close();
+		}
+	}
+	
 }

@@ -64,6 +64,7 @@ public class UserDAO {
 				int current_batch_id = results.getInt(8);
 				User user = new User(username, password, firstname, lastname,
 						email, num_indexed_records, current_batch_id);
+				user.setID(id);
 				allUsers.add(user);
 			}
 		} catch (SQLException e) {
@@ -133,7 +134,6 @@ public class UserDAO {
 	public void insert(User user, Database database) throws SQLException {
 
 		PreparedStatement pstmt = null;
-		Statement stmt = null;
 		ResultSet results = null;
 
 		try {
@@ -172,23 +172,26 @@ public class UserDAO {
 	 */
 	public void update(User user, Database database) throws SQLException {
 
-		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet results = null;
 
 		try {
-			String addsql = "UPDATE Users SET num_indexed_records = ? , current_batch_id = ? WHERE ID = ?";
-			pstmt = con.prepareStatement(addsql);
+			String sql = "UPDATE Users SET username=?, password=?, firstname=?,lastname=? , email=?, num_indexed_records=? ,current_batch_id=? WHERE ID = ?";
+			pstmt = database.getConnection().prepareStatement(sql);
 
-			pstmt.setInt(1, user.getNum_indexed_records());
-			pstmt.setInt(2, user.getCurr_batch_id());
-			pstmt.setInt(3, user.getID());
-
-			if (pstmt.executeUpdate() == 1) {
-				System.out.println("Success: User updated.");
+			pstmt.setString(1, user.getUsername());
+			pstmt.setString(2, user.getPassword());
+			pstmt.setString(3, user.getFirstname());
+			pstmt.setString(4, user.getLastname());
+			pstmt.setString(5, user.getEmail());
+			pstmt.setInt(6, user.getNum_indexed_records());
+			pstmt.setInt(7, user.getCurr_batch_id());
+			pstmt.setInt(8, user.getID());
+			
+			if(pstmt.executeUpdate() == 1) {
+				System.out.println("success");
 			} else {
-				// ERROR :Q
-				System.out.println("Failed: Unable to update user.");
+				System.out.println("problem");
 			}
 
 		} catch (SQLException e) {

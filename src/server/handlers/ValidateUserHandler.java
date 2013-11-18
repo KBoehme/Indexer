@@ -38,7 +38,6 @@ public class ValidateUserHandler extends BaseHandler implements HttpHandler {
 	 */
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
-		
 		ValidateUser_result result = new ValidateUser_result();
 		User user = null;
 		try {

@@ -23,7 +23,14 @@ public class ServerUnitTests {
 	public static void main(String[] args) {
 		
 		String[] testClasses = new String[] {
-				"server.ServerUnitTests"
+				"server.ServerUnitTests",
+				"server.dao.FieldDAOTest" ,
+				"server.dao.ImageDAOTest" ,
+				"server.dao.ProjectDAOTest" ,
+				"server.dao.RecordDAOTest" ,
+				"server.dao.UserDAOTest" ,
+				"server.dao.ValidateUserDAOTest" ,
+				"server.dao.ValueDAOTest"
 		};
 
 		org.junit.runner.JUnitCore.main(testClasses);

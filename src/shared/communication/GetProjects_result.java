@@ -56,18 +56,4 @@ public class GetProjects_result extends Base_result {
 		this.projects = projects;
 	}
 
-	/**
-	 * @return the result_string
-	 */
-	public String getResult_string() {
-		return result_string;
-	}
-
-	/**
-	 * @param result_string the result_string to set
-	 */
-	public void setResult_string(String result_string) {
-		this.result_string = result_string;
-	}
-
 }

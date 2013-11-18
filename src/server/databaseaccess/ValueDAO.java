@@ -40,15 +40,14 @@ public class ValueDAO {
 	 */
 	public ArrayList<Value> getAll(Database database) throws SQLException {
 		ArrayList<Value> allvalues = new ArrayList<Value>();
-		Connection con = database.getConnection();
 		PreparedStatement pstmt = null;
-		Statement stmt = null;
 		ResultSet results = null;
 
 		try {
-			String sql = "SELECT * FROM values";
-			stmt = database.getConnection().prepareStatement(sql);
-			results = stmt.executeQuery(sql);
+			String sql = "SELECT * FROM Value";
+			pstmt = database.getConnection().prepareStatement(sql);
+			results = pstmt.executeQuery();
+			
 			while (results.next()) {
 				// Extract all the information from the value we pulled.
 				int id = results.getInt(1);
@@ -68,8 +67,8 @@ public class ValueDAO {
 		} finally {
 			if (results != null)
 				results.close();
-			if (stmt != null)
-				stmt.close();
+			if (pstmt != null)
+				pstmt.close();
 		}
 		return allvalues;
 	}
@@ -238,4 +237,35 @@ public class ValueDAO {
 		}
 
 	}
+	
+	/**
+	 * Delete all values from the database.
+	 * 
+	 * @throws SQLException
+	 * 
+	 */
+	public void deleteAll(Database database) throws SQLException {
+
+		PreparedStatement pstmt = null;
+		ResultSet results = null;
+
+		try {
+			String sql = "DROP TABLE IF EXISTS Value;";
+			String sql2 = "CREATE TABLE Value (ID INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL ,value VARCHAR NOT NULL ,fieldnum INTEGER ,rownum INTGER ,imageID INTEGER ,recordID INTEGER );";		
+			pstmt = database.getConnection().prepareStatement(sql);
+			pstmt.execute();
+			
+			pstmt = database.getConnection().prepareStatement(sql2);
+			pstmt.execute();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (pstmt != null)
+				pstmt.close();
+			if (results != null)
+				results.close();
+		}
+	}
+	
 }
